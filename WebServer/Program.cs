@@ -18,9 +18,7 @@ namespace WebServer
             int V = 212;
             int ID = 255;
             Console.WriteAscii("Test: Web Server...", Color.FromArgb(DA, V, ID));
-
-
-
+                       
             var server = new WebServer("http://*:51111/", @"C:\D\Workspace\webroot");
             try
             {
