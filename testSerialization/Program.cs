@@ -65,13 +65,12 @@ namespace testSerialization
             this.p = this.p ?? new Person { Name = "Default pname", SecondValue = "Default pval" };
         }
 
-        public Tst(SerializationInfo info, StreamingContext context)
+        public Tst() { }
+        protected Tst(SerializationInfo info, StreamingContext context)
         {
             Name = info.GetString("Name");
-            // Десериализировать Players в массив для соответствия сериализации:
-            //Person[J а = (Person[])si.GetValue("PlayerData", typeof(Person[]));
-            // Сконструировать новый список List, используя этот массив:
-            //Players = new List<Person>(а);
+            // Десериализировать Player для соответствия сериализации:
+            p = (Person)info.GetValue("p", typeof(Person));
         }
     }
 
