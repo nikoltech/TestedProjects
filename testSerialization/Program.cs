@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
@@ -46,7 +47,7 @@ namespace testSerialization
         }
     }
 
-    [Serializable] class Tst //: ISerializable
+    [Serializable] class Tst : ISerializable
     {
         public string Name;
         public string SecondValue;
@@ -62,6 +63,15 @@ namespace testSerialization
         [OnSerializing] void CreatePersonIfNull(StreamingContext ctx)
         {
             this.p = this.p ?? new Person { Name = "Default pname", SecondValue = "Default pval" };
+        }
+
+        public Tst(SerializationInfo info, StreamingContext context)
+        {
+            Name = info.GetString("Name");
+            // Десериализировать Players в массив для соответствия сериализации:
+            //Person[J а = (Person[])si.GetValue("PlayerData", typeof(Person[]));
+            // Сконструировать новый список List, используя этот массив:
+            //Players = new List<Person>(а);
         }
     }
 
