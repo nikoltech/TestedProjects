@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml;
 
 namespace testSerialization
@@ -43,6 +44,37 @@ namespace testSerialization
 
 
 
+            // Binary
+            Tst2 tst2 = new Tst2();
+            tst2.Name = "My name";
+            tst2.SecondValue = "My second value";
+
+            Person pers3 = new Person();
+            pers3.Name = "My p name";
+            pers3.SecondValue = "My p second value";
+
+            tst2.p = pers3;
+            tst2.p2 = pers3;
+
+            IFormatter formatter = new BinaryFormatter { FilterLevel = System.Runtime.Serialization.Formatters.TypeFilterLevel.Low };
+            using (FileStream stream = File.Create("SerializedTst.bin"))
+            {
+                formatter.Serialize(stream, tst2);
+            }
+            using (FileStream stream = File.OpenRead("SerializedTst.bin"))
+            {
+                Tst2 t = (Tst2)formatter.Deserialize(stream);
+                Console.WriteLine($@"Binary: 
+                                t.Name - {t?.Name ?? "empty"},
+                                t.SecondValue - {t?.SecondValue ?? "empty"},
+                                p.Name - {t?.p?.Name ?? "empty"},
+                                p.SecondValue - {t?.p?.SecondValue ?? "empty"},
+                                p2.Name - {t?.p2?.Name ?? "empty"},
+                                p2.SecondValue - {t?.p2?.SecondValue ?? "empty"}");
+            }
+
+
+
             Console.ReadKey();
         }
     }
@@ -78,5 +110,22 @@ namespace testSerialization
     {
         public string Name;
         public string SecondValue;
+    }
+
+    [Serializable]
+    class Tst2
+    {
+        public string Name;
+        public string SecondValue;
+        [DataMember] public Person p;
+        [DataMember] public Person p2;
+
+        [OnSerializing]
+        void CreatePersonIfNull(StreamingContext ctx)
+        {
+            this.p = this.p ?? new Person { Name = "Default pname", SecondValue = "Default pval" };
+            this.p2 = this.p2 ?? new Person { Name = "Default pname", SecondValue = "Default pval" };
+        }
+
     }
 }
