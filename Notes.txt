@@ -1,0 +1,13 @@
+Task 1
+do more paralell computing
+
+*See SemaphoreSlim (it cannot use signaling between threads)
+
+Depends:
+- Task 2
+
+//----------------------------------------------------------
+Task 1: Subtask 1
+Compute number of free cpu cores
+Compute threads number needs to work
+
