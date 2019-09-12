@@ -32,7 +32,7 @@ namespace LockSlim
                 this._rw.EnterReadLock();
                 foreach (int i in this._items)
                 {
-                    Thread.Sleep(10);
+                    Thread.Sleep(100);
                     Console.WriteLine($"Read #{id} -  {i}");
                 }
                 this._rw.ExitReadLock();
@@ -51,7 +51,7 @@ namespace LockSlim
                 this._items.Add(number);
                 this._rw.ExitWriteLock();
                 Console.WriteLine($"Write #{id} - Thread {threadId} added {number}");
-                Thread.Sleep(100);
+                Thread.Sleep(1000);
             }
         }
 
