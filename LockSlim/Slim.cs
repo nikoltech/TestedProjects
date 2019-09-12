@@ -30,10 +30,10 @@ namespace LockSlim
             while (true)
             {
                 this._rw.EnterReadLock();
+                Console.WriteLine($"Read #{id} -  now {this._items.Count} items");
                 foreach (int i in this._items)
                 {
                     Thread.Sleep(100);
-                    Console.WriteLine($"Read #{id} -  {i}");
                 }
                 this._rw.ExitReadLock();
             }
