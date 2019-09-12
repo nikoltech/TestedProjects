@@ -16,11 +16,11 @@ namespace LockSlim
 
         public void StartThreads()
         {
-            new Thread(new ParameterizedThreadStart(Read)).Start(1);
-            new Thread(new ParameterizedThreadStart(Read)).Start(2);
-            new Thread(new ParameterizedThreadStart(Read)).Start(3);
-            new Thread(new ParameterizedThreadStart(Write)).Start(new WriteObject { id = 4, threadId = "A" });
-            new Thread(new ParameterizedThreadStart(Write)).Start(new WriteObject { id = 5, threadId = "B" });
+            new Thread(new ParameterizedThreadStart(Read)) {IsBackground = true }.Start(1);
+            new Thread(new ParameterizedThreadStart(Read)) { IsBackground = true }.Start(2);
+            new Thread(new ParameterizedThreadStart(Read)) { IsBackground = true }.Start(3);
+            new Thread(new ParameterizedThreadStart(Write)) { IsBackground = true }.Start(new WriteObject { id = 4, threadId = "A" });
+            new Thread(new ParameterizedThreadStart(Write)) { IsBackground = true }.Start(new WriteObject { id = 5, threadId = "B" });
         }
 
         private void Read(object idObj)
