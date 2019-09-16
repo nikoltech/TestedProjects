@@ -42,6 +42,8 @@
             t1.Start();
             t2.Start();
         }
+
+        // TODO: Take out the break operator
         void ReadLinesFromFile()
         {
             using (StreamReader sr = File.OpenText(pathToFile))
@@ -53,7 +55,7 @@
                     data.Enqueue(line);
                     if (data.Count == count)
                     {
-                        flagReady.Set();
+                        flagReady.Set(); break;
                         flagGo.WaitOne();
                     }
                 }

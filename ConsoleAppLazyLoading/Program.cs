@@ -11,9 +11,8 @@ namespace ConsoleAppLazyLoading
 {
     class Program
     {
-        static void Main(string[] args)
+        static async System.Threading.Tasks.Task Main(string[] args)
         {
-            //Console.WriteLine("Hello World!");
             int DA = 244;
             int V = 212;
             int ID = 255;
@@ -24,11 +23,23 @@ namespace ConsoleAppLazyLoading
             //byte[] ar = new byte[100000000];
             //f.Read(ar, 0, (int)f.Length);
 
-            BigFileReader reader = new BigFileReader(@"C:\Users\NWork\source\repos\ConsoleAppLazyLoading\Sample-SQL-File-1000000-Rows.sql", 50);
-            //reader.Run();
+            try
+            {
+                //BigFileReader reader = new BigFileReader(@"C:\Users\NWork\source\repos\ConsoleAppLazyLoading\Sample-SQL-File-1000000-Rows.sql", 50);
+                //reader.Run();
+
+                MultThreadFileReader reader = new MultThreadFileReader(@"C:\Users\NWork\source\repos\ConsoleAppLazyLoading\Sample-SQL-File-1000000-Rows.sql");
+                reader.Run();
+
+                Console.WriteLine("test line");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message, Color.OrangeRed);
+            }
 
             // test
-            //new TestThreads().Run();
+            // new TestThreads().Run();
 
             Console.ReadLine();
         }

@@ -6,6 +6,7 @@
     using System.Runtime.InteropServices;
     using System.Text;
     using System.Threading;
+    using Console = Colorful.Console;
 
     public class TestThreads
     {
@@ -18,11 +19,11 @@
                 processors = int.Parse(processorsStr);
             }
 
-            Console.WriteLine(processors.ToString(), Color.Cyan);
-            Console.WriteLine(TestThreads.GetCurrentProcessorNumber().ToString(), Color.OrangeRed);
+            Console.WriteLine($"NUMBER_OF_PROCESSORS {processors}", Color.Cyan);
+            Console.WriteLine($"CurrentProcessorNumber {TestThreads.GetCurrentProcessorNumber()}", Color.OrangeRed);
 
             List<Thread> threads = new List<Thread>();
-            for (int i = 0; i < processors; i++)
+            for (int i = 1; i < processors; i++)
             {
                 Thread.Sleep(800);
                 Thread t = new Thread(new ParameterizedThreadStart(TestThread));
@@ -35,6 +36,7 @@
 
             int num = 0;
             object threadContext = new object();
+
             // colors value
             int DA = 244;
             int V = 212;
@@ -51,15 +53,15 @@
             TestThreadParameters parameters = (TestThreadParameters)testThreadParametersClass;
 
             int k = parameters.ThreadNumber;
-            Console.WriteLine("-----------");
             /*for (int j = 0; j < 10; j++)
             {
                 Thread.Sleep(2000);*/
-            lock (parameters.ThreadLockContext)
-            {
-                Console.WriteLine($"Thread {k}", Color.FromArgb(parameters.DA - 10, parameters.V - 10, parameters.ID - 10));
-                Console.WriteLine(TestThreads.GetCurrentProcessorNumber().ToString(), Color.OrangeRed);
-            }
+                lock (parameters.ThreadLockContext)
+                {
+                    Console.WriteLine("-----------");
+                    Console.Write($"Thread {k}  Core ", Color.FromArgb(parameters.DA - 10, parameters.V - 10, parameters.ID - 10));
+                    Console.WriteLine(TestThreads.GetCurrentProcessorNumber().ToString(), Color.OrangeRed);
+                }
             //}
         }
 

@@ -8,10 +8,11 @@ Depends:
 
 //----------------------------------------------------------
 Task 1: Subtask 1
-Compute number of free cpu cores
++- Compute number of free cpu cores
 Compute threads number needs to work
 
 
 //----------------------------------------------------------
 Task 2
 Refactor for test version
+
