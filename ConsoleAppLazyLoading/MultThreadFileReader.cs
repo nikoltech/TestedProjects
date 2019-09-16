@@ -52,25 +52,19 @@
             object threadContext = new object();
             for (int i = 1; i < processorNumber; i++)
             {
-                //Thread t = new Thread(new ParameterizedThreadStart(PerformThread));
-                //t.IsBackground = true;
-                //MultThreadFileReader.SetThreadAffinityMask((IntPtr)t.ManagedThreadId, (UIntPtr)MultThreadFileReader.GetCurrentProcessorNumber());
-                //threads.Add(t);
-
-                Task t = new Task(() => this.PerformThread(new ThreadParameters { ThreadNumber = i, ThreadLockContext = threadContext }));
+                Task t = new Task(() =>
+                {
+                    var k = i;
+                    this.PerformThread(new ThreadParameters { ThreadNumber = k, ThreadLockContext = threadContext });
+                });
                 
                 //MultThreadFileReader.SetThreadAffinityMask((IntPtr)t.ManagedThreadId, (UIntPtr)MultThreadFileReader.GetCurrentProcessorNumber());
                 tasks.Add(t);
             }
 
-            //int num = 0;
-            //object threadContext = new object();
             tasks.ForEach(t => t.Start());
-
-            Task.WaitAll();
+            Task.WaitAll(tasks.ToArray());
         }
-
-        
 
         #region WinApi
         [DllImport("kernel32.dll")]
@@ -85,7 +79,7 @@
         [DllImport("kernel32.dll")]
         public static extern UIntPtr SetThreadAffinityMask(IntPtr hThread, UIntPtr dwThreadAffinityMask);
         #endregion
-        #region private methods, classes
+        #region private methods, classesы
         // TODO: Rewrite with task requirements
         private void PerformThread(object testThreadParametersClass)
         {

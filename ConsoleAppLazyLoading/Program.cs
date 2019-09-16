@@ -1,14 +1,9 @@
-﻿using Colorful;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Threading;
-using Console = Colorful.Console;
-
-namespace ConsoleAppLazyLoading
+﻿namespace ConsoleAppLazyLoading
 {
+    using System;
+    using System.Drawing;
+    using Console = Colorful.Console;
+
     class Program
     {
         static async System.Threading.Tasks.Task Main(string[] args)
@@ -17,7 +12,6 @@ namespace ConsoleAppLazyLoading
             int V = 212;
             int ID = 255;
             Console.WriteAscii("Hello World!", Color.FromArgb(DA, V, ID));
-
 
             //FileStream f = File.Open(@"C:/Sample-SQL-File-1000000-Rows.sql", FileMode.Open);
             //byte[] ar = new byte[100000000];
@@ -29,9 +23,7 @@ namespace ConsoleAppLazyLoading
                 //reader.Run();
 
                 MultThreadFileReader reader = new MultThreadFileReader(@"C:\Users\NWork\source\repos\ConsoleAppLazyLoading\Sample-SQL-File-1000000-Rows.sql");
-                reader.Run();
-
-                Console.WriteLine("test line");
+                await reader.Run();
             }
             catch (Exception ex)
             {
