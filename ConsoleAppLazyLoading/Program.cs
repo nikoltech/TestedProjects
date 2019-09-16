@@ -24,17 +24,13 @@ namespace ConsoleAppLazyLoading
             //byte[] ar = new byte[100000000];
             //f.Read(ar, 0, (int)f.Length);
 
-            BigFileReader reader = new BigFileReader(@"C:/Sample-SQL-File-1000000-Rows.sql", 50);
-            reader.Run();
+            BigFileReader reader = new BigFileReader(@"C:\Users\NWork\source\repos\ConsoleAppLazyLoading\Sample-SQL-File-1000000-Rows.sql", 50);
+            //reader.Run();
 
             // test
             //new TestThreads().Run();
 
             Console.ReadLine();
         }
-
-        
-
-        
     }
 }

@@ -7,6 +7,9 @@
     using System.Threading;
     using Console = Colorful.Console;
 
+    /// <summary>
+    /// For reading dump of sql table
+    /// </summary>
     public class BigFileReader
     {
         private readonly string pathToFile;
@@ -15,6 +18,11 @@
         private readonly EventWaitHandle flagGo = new AutoResetEvent(false);
         private readonly EventWaitHandle flagReady = new AutoResetEvent(false);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="linesCount">dump sql table</param>
         public BigFileReader(string path, int linesCount)
         {
             if (!File.Exists(path))
