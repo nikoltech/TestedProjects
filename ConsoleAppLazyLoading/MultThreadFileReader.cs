@@ -63,7 +63,7 @@
             int num = 0;
             object threadContext = new object();
             threads.ForEach(t => t.Start(new ThreadParameters { ThreadNumber = ++num, ThreadLockContext = threadContext }));
-            await Task.WaitAll();
+            
         }
 
         
