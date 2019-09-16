@@ -48,22 +48,26 @@
 
             Console.WriteLine($"NUMBER_OF_PROCESSORS {processorNumber}", Color.Cyan);
 
-            List<Thread> threads = new List<Thread>();
+            List<Task> tasks = new List<Task>();
+            object threadContext = new object();
             for (int i = 1; i < processorNumber; i++)
             {
-                // Thread.Sleep(800);
-                Thread t = new Thread(new ParameterizedThreadStart(PerformThread));
-                t.IsBackground = true;
+                //Thread t = new Thread(new ParameterizedThreadStart(PerformThread));
+                //t.IsBackground = true;
+                //MultThreadFileReader.SetThreadAffinityMask((IntPtr)t.ManagedThreadId, (UIntPtr)MultThreadFileReader.GetCurrentProcessorNumber());
+                //threads.Add(t);
 
-                MultThreadFileReader.SetThreadAffinityMask((IntPtr)t.ManagedThreadId, (UIntPtr)MultThreadFileReader.GetCurrentProcessorNumber());
-
-                threads.Add(t);
+                Task t = new Task(() => this.PerformThread(new ThreadParameters { ThreadNumber = i, ThreadLockContext = threadContext }));
+                
+                //MultThreadFileReader.SetThreadAffinityMask((IntPtr)t.ManagedThreadId, (UIntPtr)MultThreadFileReader.GetCurrentProcessorNumber());
+                tasks.Add(t);
             }
 
-            int num = 0;
-            object threadContext = new object();
-            threads.ForEach(t => t.Start(new ThreadParameters { ThreadNumber = ++num, ThreadLockContext = threadContext }));
-            await Task.WaitAll();
+            //int num = 0;
+            //object threadContext = new object();
+            tasks.ForEach(t => t.Start());
+
+            Task.WaitAll();
         }
 
         
