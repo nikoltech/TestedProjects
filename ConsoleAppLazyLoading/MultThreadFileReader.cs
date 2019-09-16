@@ -29,7 +29,6 @@
         // TODO: Rewrite with task requirements
         public async Task Run()
         {
-            Console.WriteLine("MultThreadFileReader", Color.Orange);
             Console.WriteLine("Start...", Color.LightGreen);
 
             int processorNumber = 1;
@@ -50,20 +49,20 @@
 
             List<Task> tasks = new List<Task>();
             object threadContext = new object();
-            for (int i = 1; i < processorNumber; i++)
+            for (int i = 0; i < processorNumber; i++)
             {
+                int num = i;
                 Task t = new Task(() =>
                 {
-                    var k = i;
-                    this.PerformThread(new ThreadParameters { ThreadNumber = k, ThreadLockContext = threadContext });
+                    this.PerformThread(new ThreadParameters { ThreadNumber = num, ThreadLockContext = threadContext });
                 });
                 
-                //MultThreadFileReader.SetThreadAffinityMask((IntPtr)t.ManagedThreadId, (UIntPtr)MultThreadFileReader.GetCurrentProcessorNumber());
+                // MultThreadFileReader.SetThreadAffinityMask((IntPtr)t.ManagedThreadId, (UIntPtr)MultThreadFileReader.GetCurrentProcessorNumber());
                 tasks.Add(t);
             }
 
             tasks.ForEach(t => t.Start());
-            Task.WaitAll(tasks.ToArray());
+            await Task.WhenAll(tasks);
         }
 
         #region WinApi
@@ -94,7 +93,9 @@
             lock (parameters.ThreadLockContext)
             {
                 Console.WriteLine("-----------");
-                Console.Write($"Thread {k}  Core ", Color.GreenYellow);
+                Console.Write($"Thread ", Color.GreenYellow);
+                Console.Write(k, Color.Orange);
+                Console.Write($" Core ", Color.GreenYellow);
                 Console.WriteLine(TestThreads.GetCurrentProcessorNumber().ToString(), Color.OrangeRed);
             }
         }

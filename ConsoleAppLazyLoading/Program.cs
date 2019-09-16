@@ -23,6 +23,7 @@
                 //reader.Run();
 
                 MultThreadFileReader reader = new MultThreadFileReader(@"C:\Users\NWork\source\repos\ConsoleAppLazyLoading\Sample-SQL-File-1000000-Rows.sql");
+                Console.WriteLine("MultThreadFileReader", Color.Orange);
                 await reader.Run();
             }
             catch (Exception ex)

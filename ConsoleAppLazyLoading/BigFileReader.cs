@@ -46,6 +46,8 @@
         // TODO: Take out the break operator
         void ReadLinesFromFile()
         {
+            Console.WriteLine("ReadLinesFromFile");
+            Thread.Sleep(2000);
             using (StreamReader sr = File.OpenText(pathToFile))
             {
                 string line = "";
