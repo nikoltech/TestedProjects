@@ -29,7 +29,6 @@
         // TODO: Rewrite with task requirements
         public async Task Run()
         {
-            Console.WriteLine("MultThreadFileReader", Color.Orange);
             Console.WriteLine("Start...", Color.LightGreen);
 
             int processorNumber = 1;
@@ -48,25 +47,23 @@
 
             Console.WriteLine($"NUMBER_OF_PROCESSORS {processorNumber}", Color.Cyan);
 
-            List<Thread> threads = new List<Thread>();
-            for (int i = 1; i < processorNumber; i++)
+            List<Task> tasks = new List<Task>();
+            object threadContext = new object();
+            for (int i = 0; i < processorNumber; i++)
             {
-                // Thread.Sleep(800);
-                Thread t = new Thread(new ParameterizedThreadStart(PerformThread));
-                t.IsBackground = true;
-
-                MultThreadFileReader.SetThreadAffinityMask((IntPtr)t.ManagedThreadId, (UIntPtr)MultThreadFileReader.GetCurrentProcessorNumber());
-
-                threads.Add(t);
+                int num = i;
+                Task t = new Task(() =>
+                {
+                    this.PerformThread(new ThreadParameters { ThreadNumber = num, ThreadLockContext = threadContext });
+                });
+                
+                // MultThreadFileReader.SetThreadAffinityMask((IntPtr)t.ManagedThreadId, (UIntPtr)MultThreadFileReader.GetCurrentProcessorNumber());
+                tasks.Add(t);
             }
 
-            int num = 0;
-            object threadContext = new object();
-            threads.ForEach(t => t.Start(new ThreadParameters { ThreadNumber = ++num, ThreadLockContext = threadContext }));
-            
+            tasks.ForEach(t => t.Start());
+            await Task.WhenAll(tasks);
         }
-
-        
 
         #region WinApi
         [DllImport("kernel32.dll")]
@@ -81,7 +78,7 @@
         [DllImport("kernel32.dll")]
         public static extern UIntPtr SetThreadAffinityMask(IntPtr hThread, UIntPtr dwThreadAffinityMask);
         #endregion
-        #region private methods, classes
+        #region private methods, classesы
         // TODO: Rewrite with task requirements
         private void PerformThread(object testThreadParametersClass)
         {
@@ -96,7 +93,9 @@
             lock (parameters.ThreadLockContext)
             {
                 Console.WriteLine("-----------");
-                Console.Write($"Thread {k}  Core ", Color.GreenYellow);
+                Console.Write($"Thread ", Color.GreenYellow);
+                Console.Write(k, Color.Orange);
+                Console.Write($" Core ", Color.GreenYellow);
                 Console.WriteLine(TestThreads.GetCurrentProcessorNumber().ToString(), Color.OrangeRed);
             }
         }
