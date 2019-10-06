@@ -6,6 +6,17 @@ namespace LabsHelper
     {
         static void Main(string[] args)
         {
+            //int t = -8;
+            //double a = Math.Sqrt(-8);
+            //double a2 = Math.Pow(8, 1/3);
+
+            //Console.WriteLine(a);
+            //Console.WriteLine(a2);
+
+            //Console.ReadKey(false);
+
+
+            //return;
             int lbNum = 0;
             while (true)
             {
@@ -56,10 +67,15 @@ namespace LabsHelper
 
                 Console.WriteLine("numStudent");
 
-                double result = 1 + ((Math.Pow(numStudent, 2) + (3 * numStudent)) % 46);
+                double result = 1 + ((Math.Pow(numStudent, 2) * numTask + (3 * numStudent)) % 46);
 
                 Console.WriteLine($"Result {result}");
-                Console.ReadKey(false);
+                ConsoleKeyInfo key = Console.ReadKey(false);
+
+                if (key.Key == ConsoleKey.Escape)
+                {
+                    return;
+                }
             }
         }
 
