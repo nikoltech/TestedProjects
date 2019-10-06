@@ -39,6 +39,9 @@ namespace LabsHelper
             
         }
 
+        /// <summary>
+        /// Computing number of task from the list
+        /// </summary>
         static void Lab1()
         {
             int numStudent = 0, numTask = 0;
