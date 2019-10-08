@@ -30,9 +30,9 @@ namespace LabsHelper
 
                     switch (lbNum)
                     {
-                        case 1: { Program.Lab1(); break; }
-
-                        case 2: { Program.Lab2(); break; } 
+                        case 1:
+                        case 2:
+                            { Program.Lab1(); break; }
 
                         default: { Console.WriteLine("Enter another lab number!"); break; }
                     }
@@ -79,9 +79,9 @@ namespace LabsHelper
             }
         }
 
-        static void Lab2()
+        static void Lab3()
         {
-
+            Lab1();
         }
     }
 }
