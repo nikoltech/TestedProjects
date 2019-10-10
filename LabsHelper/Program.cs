@@ -34,9 +34,14 @@ namespace LabsHelper
                         case 2:
                             { Program.Lab1(); break; }
                         case 3:
-                            { Program.Lab1(); break; }
+                            { Program.Lab3(); break; }
 
-                        default: { Console.WriteLine("Enter another lab number!"); break; }
+                        default:
+                            {
+                                Console.WriteLine("Enter another lab number!");
+                                Console.ReadKey(false);
+                                break;
+                            }
                     }
                 }
                 catch (Exception ex)
@@ -58,7 +63,7 @@ namespace LabsHelper
         /// </summary>
         static void Lab1()
         {
-            int numStudent = 0;
+            int numStudent = 0, taskCount = 5;
             while (true)
             {
                 Console.Clear();
@@ -66,8 +71,8 @@ namespace LabsHelper
                 Console.WriteLine("numStudent");
                 numStudent = Int32.Parse(Console.ReadLine());
 
-                double[] result = new double[5];
-                for (int numTask = 1; numTask <= 5; numTask++)
+                double[] result = new double[taskCount];
+                for (int numTask = 1; numTask <= taskCount; numTask++)
                 {
                     result[numTask - 1] = 1 + ((Math.Pow(numStudent, 2) * numTask + (3 * numStudent)) % 46);
                 }
@@ -88,7 +93,7 @@ namespace LabsHelper
 
         static void Lab3()
         {
-            int numStudent = 0;
+            int numStudent = 0, taskCount = 2;
             while (true)
             {
                 Console.Clear();
@@ -96,8 +101,8 @@ namespace LabsHelper
                 Console.WriteLine("numStudent");
                 numStudent = Int32.Parse(Console.ReadLine());
 
-                double[] result = new double[5];
-                for (int numTask = 1; numTask <= 2; numTask++)
+                double[] result = new double[taskCount];
+                for (int numTask = 1; numTask <= taskCount; numTask++)
                 {
                     result[numTask - 1] = 1 + ((Math.Pow(numStudent, 2) * numTask + (7 * numStudent)) % 23);
                 }
