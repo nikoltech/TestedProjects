@@ -33,6 +33,8 @@ namespace LabsHelper
                         case 1:
                         case 2:
                             { Program.Lab1(); break; }
+                        case 3:
+                            { Program.Lab1(); break; }
 
                         default: { Console.WriteLine("Enter another lab number!"); break; }
                     }
@@ -50,6 +52,7 @@ namespace LabsHelper
             
         }
 
+        #region Labs algorithm
         /// <summary>
         /// Computing number of task from the list
         /// </summary>
@@ -85,7 +88,33 @@ namespace LabsHelper
 
         static void Lab3()
         {
-            Lab1();
+            int numStudent = 0;
+            while (true)
+            {
+                Console.Clear();
+
+                Console.WriteLine("numStudent");
+                numStudent = Int32.Parse(Console.ReadLine());
+
+                double[] result = new double[5];
+                for (int numTask = 1; numTask <= 2; numTask++)
+                {
+                    result[numTask - 1] = 1 + ((Math.Pow(numStudent, 2) * numTask + (7 * numStudent)) % 23);
+                }
+
+                Console.WriteLine("Result:");
+                foreach (double numTask in result)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+                ConsoleKeyInfo key = Console.ReadKey(false);
+
+                if (key.Key == ConsoleKey.Escape)
+                {
+                    return;
+                }
+            }
         }
+        #endregion
     }
 }
