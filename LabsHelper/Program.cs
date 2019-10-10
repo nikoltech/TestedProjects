@@ -55,21 +55,25 @@ namespace LabsHelper
         /// </summary>
         static void Lab1()
         {
-            int numStudent = 0, numTask = 0;
+            int numStudent = 0;
             while (true)
             {
                 Console.Clear();
 
                 Console.WriteLine("numStudent");
                 numStudent = Int32.Parse(Console.ReadLine());
-                Console.WriteLine("numTask");
-                numTask = Int32.Parse(Console.ReadLine());
 
-                Console.WriteLine("numStudent");
+                double[] result = new double[5];
+                for (int numTask = 1; numTask <= 5; numTask++)
+                {
+                    result[numTask - 1] = 1 + ((Math.Pow(numStudent, 2) * numTask + (3 * numStudent)) % 46);
+                }
 
-                double result = 1 + ((Math.Pow(numStudent, 2) * numTask + (3 * numStudent)) % 46);
-
-                Console.WriteLine($"Result {result}");
+                Console.WriteLine("Result:");
+                foreach (double numTask in result)
+                {
+                    Console.Write($"{numTask}  ");
+                }
                 ConsoleKeyInfo key = Console.ReadKey(false);
 
                 if (key.Key == ConsoleKey.Escape)
