@@ -32,9 +32,11 @@ namespace LabsHelper
                     {
                         case 1:
                         case 2:
-                            { Program.Lab1(); break; }
+                            { Program.Lab1And2(); break; }
                         case 3:
                             { Program.Lab3(); break; }
+                        case 4:
+                            { Program.Lab4(); break; }
 
                         default:
                             {
@@ -61,12 +63,13 @@ namespace LabsHelper
         /// <summary>
         /// Computing number of task from the list
         /// </summary>
-        static void Lab1()
+        static void Lab1And2()
         {
             int numStudent = 0, taskCount = 5;
             while (true)
             {
                 Console.Clear();
+                numStudent = 0;
 
                 Console.WriteLine("numStudent");
                 numStudent = Int32.Parse(Console.ReadLine());
@@ -97,6 +100,7 @@ namespace LabsHelper
             while (true)
             {
                 Console.Clear();
+                numStudent = 0;
 
                 Console.WriteLine("numStudent");
                 numStudent = Int32.Parse(Console.ReadLine());
@@ -105,6 +109,37 @@ namespace LabsHelper
                 for (int numTask = 1; numTask <= taskCount; numTask++)
                 {
                     result[numTask - 1] = 1 + ((Math.Pow(numStudent, 2) * numTask + (7 * numStudent)) % 23);
+                }
+
+                Console.WriteLine("Result:");
+                foreach (double numTask in result)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+                ConsoleKeyInfo key = Console.ReadKey(false);
+
+                if (key.Key == ConsoleKey.Escape)
+                {
+                    return;
+                }
+            }
+        }
+
+        static void Lab4()
+        {
+            int numStudent = 0, taskCount = 10;
+            while (true)
+            {
+                Console.Clear();
+                numStudent = 0;
+
+                Console.WriteLine("numStudent");
+                numStudent = Int32.Parse(Console.ReadLine());
+
+                double[] result = new double[taskCount];
+                for (int numTask = 1; numTask <= taskCount; numTask++)
+                {
+                    result[numTask - 1] = ((numStudent + (numTask - 1) * 11) % 112) + 56;
                 }
 
                 Console.WriteLine("Result:");
