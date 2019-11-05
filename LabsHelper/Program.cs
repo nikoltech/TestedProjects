@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Reflection;
+using System.Text;
 
 namespace LabsHelper
 {
@@ -6,17 +9,8 @@ namespace LabsHelper
     {
         static void Main(string[] args)
         {
-            //int t = -8;
-            //double a = Math.Sqrt(-8);
-            //double a2 = Math.Pow(8, 1/3);
-
-            //Console.WriteLine(a);
-            //Console.WriteLine(a2);
-
-            //Console.ReadKey(false);
-
-
-            //return;
+            Type program = typeof(Program);
+            StringBuilder methodName = new StringBuilder();
             int lbNum = 0;
             while (true)
             {
@@ -26,33 +20,29 @@ namespace LabsHelper
 
                     Console.WriteLine("Enter lab num: ");
                     lbNum = 0;
-                    lbNum = Int32.Parse(Console.ReadLine());
+                    Int32.TryParse(Console.ReadLine(), out lbNum);
 
-                    switch (lbNum)
+                    methodName.Append($"Lab{lbNum}");
+                    MethodInfo labMethod = program.GetMethod(methodName.ToString(), BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+                    methodName.Clear();
+
+                    if (labMethod == null)
                     {
-                        case 1:
-                        case 2:
-                            { Program.Lab1And2(); break; }
-                        case 3:
-                            { Program.Lab3(); break; }
-                        case 4:
-                            { Program.Lab4(); break; }
-
-                        default:
-                            {
-                                Console.WriteLine("Enter another lab number!");
-                                Console.ReadKey(false);
-                                break;
-                            }
+                        Console.WriteLine("Enter another lab number!");
+                        Console.ReadKey(false);
+                    }
+                    else
+                    {
+                        labMethod.Invoke(null, null);
                     }
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine();
                     Console.WriteLine(ex.Message);
-
                     Console.WriteLine();
                     Console.WriteLine("Enter any key for continue...");
-                    Console.ReadKey(false);
+                    Console.ReadKey(true);
                     Console.Clear();
                 }
             }
@@ -63,7 +53,7 @@ namespace LabsHelper
         /// <summary>
         /// Computing number of task from the list
         /// </summary>
-        static void Lab1And2()
+        static void Lab1()
         {
             int numStudent = 0, taskCount = 5;
             while (true)
@@ -72,7 +62,14 @@ namespace LabsHelper
                 numStudent = 0;
 
                 Console.WriteLine("numStudent");
-                numStudent = Int32.Parse(Console.ReadLine());
+                Int32.TryParse(Console.ReadLine(), out numStudent);
+                if (numStudent == 0)
+                {
+                    Console.WriteLine("Please enter another value!");
+                    Console.WriteLine();
+                    Console.ReadKey(true);
+                    continue;
+                }
 
                 double[] result = new double[taskCount];
                 for (int numTask = 1; numTask <= taskCount; numTask++)
@@ -85,13 +82,18 @@ namespace LabsHelper
                 {
                     Console.Write($"{numTask}  ");
                 }
-                ConsoleKeyInfo key = Console.ReadKey(false);
+                ConsoleKeyInfo key = Console.ReadKey(true);
 
                 if (key.Key == ConsoleKey.Escape)
                 {
                     return;
                 }
             }
+        }
+
+        static void Lab2()
+        {
+            Lab1();
         }
 
         static void Lab3()
@@ -103,7 +105,14 @@ namespace LabsHelper
                 numStudent = 0;
 
                 Console.WriteLine("numStudent");
-                numStudent = Int32.Parse(Console.ReadLine());
+                Int32.TryParse(Console.ReadLine(), out numStudent);
+                if (numStudent == 0)
+                {
+                    Console.WriteLine("Please enter another value!");
+                    Console.WriteLine();
+                    Console.ReadKey(true);
+                    continue;
+                }
 
                 double[] result = new double[taskCount];
                 for (int numTask = 1; numTask <= taskCount; numTask++)
@@ -116,7 +125,7 @@ namespace LabsHelper
                 {
                     Console.Write($"{numTask}  ");
                 }
-                ConsoleKeyInfo key = Console.ReadKey(false);
+                ConsoleKeyInfo key = Console.ReadKey(true);
 
                 if (key.Key == ConsoleKey.Escape)
                 {
@@ -134,20 +143,85 @@ namespace LabsHelper
                 numStudent = 0;
 
                 Console.WriteLine("numStudent");
-                numStudent = Int32.Parse(Console.ReadLine());
+                Int32.TryParse(Console.ReadLine(), out numStudent);
+                if (numStudent == 0)
+                {
+                    Console.WriteLine("Please enter another value!");
+                    Console.WriteLine();
+                    Console.ReadKey(true);
+                    continue;
+                }
 
-                double[] result = new double[taskCount];
+                int[] result = new int[taskCount];
                 for (int numTask = 1; numTask <= taskCount; numTask++)
                 {
                     result[numTask - 1] = ((numStudent + (numTask - 1) * 11) % 112) + 56;
                 }
 
                 Console.WriteLine("Result:");
-                foreach (double numTask in result)
+                foreach (int numTask in result)
                 {
                     Console.Write($"{numTask}  ");
                 }
-                ConsoleKeyInfo key = Console.ReadKey(false);
+
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("Result (Sorted):");
+                Array.Sort(result, Comparer.Default);
+                foreach (int numTask in result)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+
+                ConsoleKeyInfo key = Console.ReadKey(true);
+
+                if (key.Key == ConsoleKey.Escape)
+                {
+                    return;
+                }
+            }
+        }
+
+        static void Lab5()
+        {
+            int numStudent = 0, taskCount = 8;
+            while (true)
+            {
+                Console.Clear();
+                numStudent = 0;
+
+                Console.WriteLine("numStudent");
+                bool success = Int32.TryParse(Console.ReadLine(), out numStudent);
+                if (numStudent == 0)
+                {
+                    Console.WriteLine("Please enter another value!");
+                    Console.WriteLine();
+                    Console.ReadKey(true);
+                    continue;
+                }
+
+                int[] result = new int[taskCount];
+                for (int numTask = 1; numTask <= taskCount; numTask++)
+                {
+                    result[numTask - 1] = numStudent + (numTask - 1) * 35;
+                }
+
+                Console.WriteLine("Result:");
+                foreach (int numTask in result)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("Result (Sorted):");
+                Array.Sort(result, Comparer.Default);
+                foreach (int numTask in result)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+
+                ConsoleKeyInfo key = Console.ReadKey(true);
 
                 if (key.Key == ConsoleKey.Escape)
                 {
