@@ -20,7 +20,15 @@ namespace LabsHelper
 
                     Console.WriteLine("Enter lab num: ");
                     lbNum = 0;
-                    Int32.TryParse(Console.ReadLine(), out lbNum);
+                    ConsoleKeyInfo key = Console.ReadKey(true);
+
+                    if (key.Key == ConsoleKey.Escape)
+                    {
+                        Console.WriteLine("Bye bye!!!");
+                        System.Threading.Thread.Sleep(2000);
+                        return;
+                    }
+                    Int32.TryParse(key.KeyChar.ToString(), out lbNum);
 
                     methodName.Append($"Lab{lbNum}");
                     MethodInfo labMethod = program.GetMethod(methodName.ToString(), BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
