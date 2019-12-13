@@ -230,6 +230,7 @@ namespace LabsHelper
                 }
 
                 Console.WriteLine();
+                Console.WriteLine();
                 Console.WriteLine("Additional Result:");
                 foreach (int numTask in addResult)
                 {
@@ -300,6 +301,7 @@ namespace LabsHelper
                 }
 
                 Console.WriteLine();
+                Console.WriteLine();
                 Console.WriteLine("Additional Result:");
                 foreach (int numTask in addResult)
                 {
@@ -318,6 +320,79 @@ namespace LabsHelper
                 Console.WriteLine();
                 Console.WriteLine();
                 Console.WriteLine("Additional Result (Sorted):");
+                Array.Sort(addResult, Comparer.Default);
+                foreach (int numTask in addResult)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+
+
+                ConsoleKeyInfo key = Console.ReadKey(true);
+
+                if (key.Key == ConsoleKey.Escape)
+                {
+                    return;
+                }
+            }
+        }
+
+        static void Lab7()
+        {
+            int numStudent = 0, taskCount = 5;
+            while (true)
+            {
+                Console.Clear();
+                numStudent = 0;
+
+                Console.WriteLine("numStudent");
+                bool success = Int32.TryParse(Console.ReadLine(), out numStudent);
+                if (numStudent == 0)
+                {
+                    Console.WriteLine("Please enter another value!");
+                    Console.WriteLine();
+                    Console.ReadKey(true);
+                    continue;
+                }
+
+                int[] result = new int[taskCount];
+                for (int numTask = 1; numTask <= taskCount; numTask++)
+                {
+                    result[numTask - 1] = numStudent + (numTask - 1) * 35 + 902;
+                }
+
+                int addTasksVariantsCount = 1081 - 1078;
+                int[] addResult = new int[addTasksVariantsCount + 1];
+                for (int i = 0, numTask = 1078; numTask <= 1081; i++)
+                {
+                    addResult[i] = numTask++;
+                }
+
+                Console.WriteLine("Result:");
+                foreach (int numTask in result)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("Additional Result (two of ...):");
+                foreach (int numTask in addResult)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("Result (Sorted):");
+                Array.Sort(result, Comparer.Default);
+                foreach (int numTask in result)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("Additional Result  (two of ..., Sorted):");
                 Array.Sort(addResult, Comparer.Default);
                 foreach (int numTask in addResult)
                 {
