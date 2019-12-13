@@ -12,6 +12,9 @@ namespace LabsHelper
             Type program = typeof(Program);
             StringBuilder methodName = new StringBuilder();
             int lbNum = 0;
+
+            //Lab4Cycle();
+
             while (true)
             {
                 try
@@ -192,7 +195,7 @@ namespace LabsHelper
 
         static void Lab5()
         {
-            int numStudent = 0, taskCount = 8;
+            int numStudent = 0, taskCount = 8, addTaskCount = 3;
             while (true)
             {
                 Console.Clear();
@@ -214,6 +217,149 @@ namespace LabsHelper
                     result[numTask - 1] = numStudent + (numTask - 1) * 35;
                 }
 
+                int[] addResult = new int[addTaskCount];
+                for (int numTask = 1; numTask <= addTaskCount; numTask++)
+                {
+                    addResult[numTask - 1] = numStudent + (numTask - 1) * 35;
+                }
+
+                Console.WriteLine("Result:");
+                foreach (int numTask in result)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("Additional Result:");
+                foreach (int numTask in addResult)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("Result (Sorted):");
+                Array.Sort(result, Comparer.Default);
+                foreach (int numTask in result)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("Additional Result (Sorted):");
+                Array.Sort(addResult, Comparer.Default);
+                foreach (int numTask in addResult)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+
+                ConsoleKeyInfo key = Console.ReadKey(true);
+
+                if (key.Key == ConsoleKey.Escape)
+                {
+                    return;
+                }
+            }
+        }
+
+        static void Lab6()
+        {
+            int numStudent = 0, taskCount = 6, addTaskCount = 3;
+            while (true)
+            {
+                Console.Clear();
+                numStudent = 0;
+
+                Console.WriteLine("numStudent");
+                bool success = Int32.TryParse(Console.ReadLine(), out numStudent);
+                if (numStudent == 0)
+                {
+                    Console.WriteLine("Please enter another value!");
+                    Console.WriteLine();
+                    Console.ReadKey(true);
+                    continue;
+                }
+
+                int[] result = new int[taskCount];
+                for (int numTask = 1; numTask <= taskCount; numTask++)
+                {
+                    result[numTask - 1] = numStudent + (numTask - 1) * 35;
+                }
+
+                int[] addResult = new int[addTaskCount];
+                for (int numTask = 1; numTask <= addTaskCount; numTask++)
+                {
+                    addResult[numTask - 1] = (numStudent + (numTask - 1) * 35 ) % 23 + 211;
+                }
+
+                Console.WriteLine("Result:");
+                foreach (int numTask in result)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("Additional Result:");
+                foreach (int numTask in addResult)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("Result (Sorted):");
+                Array.Sort(result, Comparer.Default);
+                foreach (int numTask in result)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("Additional Result (Sorted):");
+                Array.Sort(addResult, Comparer.Default);
+                foreach (int numTask in addResult)
+                {
+                    Console.Write($"{numTask}  ");
+                }
+
+
+                ConsoleKeyInfo key = Console.ReadKey(true);
+
+                if (key.Key == ConsoleKey.Escape)
+                {
+                    return;
+                }
+            }
+        }
+        #endregion
+
+        #region Cycle Labs algorithm
+        static void Lab4Cycle()
+        {
+            int numStudent = 0, taskCount = 10;
+            for (numStudent = 1; numStudent <= 30; numStudent++)
+            {
+                Console.Clear();
+                numStudent = 0;
+
+                Console.WriteLine("numStudent");
+                Int32.TryParse(Console.ReadLine(), out numStudent);
+                if (numStudent == 0)
+                {
+                    Console.WriteLine("Please enter another value!");
+                    Console.WriteLine();
+                    Console.ReadKey(true);
+                    continue;
+                }
+
+                int[] result = new int[taskCount];
+                for (int numTask = 1; numTask <= taskCount; numTask++)
+                {
+                    result[numTask - 1] = ((numStudent + (numTask - 1) * 11) % 112) + 56;
+                }
+
                 Console.WriteLine("Result:");
                 foreach (int numTask in result)
                 {
@@ -229,12 +375,12 @@ namespace LabsHelper
                     Console.Write($"{numTask}  ");
                 }
 
-                ConsoleKeyInfo key = Console.ReadKey(true);
+                //ConsoleKeyInfo key = Console.ReadKey(true);
 
-                if (key.Key == ConsoleKey.Escape)
-                {
-                    return;
-                }
+                //if (key.Key == ConsoleKey.Escape)
+                //{
+                //    return;
+                //}
             }
         }
         #endregion
