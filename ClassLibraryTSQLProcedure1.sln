@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibraryTSQLProcedure1", "ClassLibraryTSQLProcedure1\ClassLibraryTSQLProcedure1.csproj", "{A026AB61-C6D7-4215-86F9-FE01920F5B4F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A026AB61-C6D7-4215-86F9-FE01920F5B4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A026AB61-C6D7-4215-86F9-FE01920F5B4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A026AB61-C6D7-4215-86F9-FE01920F5B4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A026AB61-C6D7-4215-86F9-FE01920F5B4F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3A9D99D4-901A-4F28-9E61-8A65AB0680E7}
+	EndGlobalSection
+EndGlobal
