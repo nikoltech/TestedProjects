@@ -15,7 +15,7 @@
         public AppContext(DbContextOptions<AppContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
+            // Database.EnsureCreated();
         }
 
         private ILoggerFactory MyLoggerFactory = LoggerFactory.Create(builder =>

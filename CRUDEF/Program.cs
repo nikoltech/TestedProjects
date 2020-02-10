@@ -1,11 +1,8 @@
 ﻿namespace CRUDEF
 {
     using CRUDEF.Entities;
-    using CRUDEF.Providers;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Infrastructure;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.Logging;
     using System;
     using System.IO;
     using System.Linq;
@@ -28,7 +25,8 @@
             var optionsBuilder = new DbContextOptionsBuilder<AppContext>();
 
             var options = optionsBuilder
-                    .UseSqlServer(connectionString)
+                    .UseSqlServer(connectionString,
+                        x => x.MigrationsAssembly("CRUDEF"))
                     .Options;
 
             // Добавление
