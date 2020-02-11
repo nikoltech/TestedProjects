@@ -1,6 +1,7 @@
 ﻿namespace CRUDEF
 {
     using CRUDEF.Entities;
+    using CRUDEF.Entities.TPH;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using System;
@@ -28,6 +29,8 @@
                     .UseSqlServer(connectionString,
                         x => x.MigrationsAssembly("CRUDEF"))
                     .Options;
+
+            #region First check Context
             /*
             // Добавление
             using (AppContext db = new AppContext(options))
@@ -97,10 +100,13 @@
                 _ = db.Database.ExecuteSqlCommand("TRUNCATE TABLE Users");
             }
             */
-            using (App2Context db = new App2Context(options))
+            #endregion
+
+            try
             {
-                try
+                using (App2Context db = new App2Context(options))
                 {
+
                     ////db.GetService<ILoggerFactory>().AddProvider(new crudefDbLoggerProvider());
                     //User user1 = new User { PassportSeria = "KM", PassportNumber = "123458", Name = "Tom", Age = 33 };
                     //User user2 = new User { PassportSeria = "KM", PassportNumber = "123459", Name = "Alice", Age = 26 };
@@ -193,9 +199,9 @@
                     s2.StudentCourses.Add(new StudentCourse { CourseId = c2.Id, StudentId = s2.Id });
                     db.SaveChanges();*/
 
-                    Student student = db.Students.FirstOrDefault();
-                    db.Students.Remove(student);
-                    db.SaveChanges();
+                    //Student student = db.Students.FirstOrDefault();
+                    //db.Students.Remove(student);
+                    //db.SaveChanges();
 
                     var courses = db.Courses.Include(c => c.StudentCourses).ThenInclude(sc => sc.Student).ToList();
                     // выводим все курсы
@@ -208,13 +214,47 @@
                             Console.WriteLine($"{s.Name}");
                     }
                 }
-                catch (Exception ex)
+                using (TPHContext db = new TPHContext())
                 {
-                    Console.WriteLine($"[ERROR Message] -- {ex.Message}");
-                    Console.WriteLine($"[ERROR InnerException] -- {ex.InnerException}");
-                }
+                    UserTPH user1 = new UserTPH { Name = "Tom" };
+                    UserTPH user2 = new UserTPH { Name = "Bob" };
+                    db.Users.Add(user1);
+                    db.Users.Add(user2);
 
+                    Employee employee = new Employee { Name = "Sam", Salary = 500 };
+                    db.Employees.Add(employee);
+
+                    Manager manager = new Manager { Name = "Robert", Departament = "IT" };
+                    db.Managers.Add(manager);
+
+                    db.SaveChanges();
+
+                    var users = db.Users.ToList();
+                    Console.WriteLine("Все пользователи");
+                    foreach (var user in users)
+                    {
+                        Console.WriteLine(user.Name);
+                    }
+
+                    Console.WriteLine("\n Все работники");
+                    foreach (var emp in db.Employees.ToList())
+                    {
+                        Console.WriteLine(emp.Name);
+                    }
+
+                    Console.WriteLine("\nВсе менеджеры");
+                    foreach (var man in db.Managers.ToList())
+                    {
+                        Console.WriteLine(man.Name);
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR Message] -- {ex.Message}");
+                Console.WriteLine($"[ERROR InnerException] -- {ex.InnerException}");
+            }
+
             Console.Read();
         }
     }
