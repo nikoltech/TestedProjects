@@ -9,7 +9,6 @@
 
     public class Program
     {
-        
         public static void Main(string[] args)
         {
             var builder = new ConfigurationBuilder();
@@ -22,13 +21,13 @@
             // получаем строку подключения
             string connectionString = config.GetConnectionString("DefaultConnection");
 
-            var optionsBuilder = new DbContextOptionsBuilder<AppContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<App2Context>();
 
             var options = optionsBuilder
                     .UseSqlServer(connectionString,
                         x => x.MigrationsAssembly("CRUDEF"))
                     .Options;
-
+            /*
             // Добавление
             using (AppContext db = new AppContext(options))
             {
@@ -96,23 +95,38 @@
 
                 _ = db.Database.ExecuteSqlCommand("TRUNCATE TABLE Users");
             }
-
-            using (AppContext db = new AppContext(options))
+            */
+            using (App2Context db = new App2Context(options))
             {
-                //db.GetService<ILoggerFactory>().AddProvider(new crudefDbLoggerProvider());
-                User user1 = new User { Name = "Tom", Age = 33 };
-                User user2 = new User { Name = "Alice", Age = 26 };
-
-                db.Users.Add(user1);
-                db.Users.Add(user2);
-                db.SaveChanges();
-
-                var users = db.Users.ToList();
-                Console.WriteLine("Данные после добавления:");
-                foreach (User u in users)
+                try
                 {
-                    Console.WriteLine($"{u.Id}.{u.Name} - {u.Age}");
+                    //db.GetService<ILoggerFactory>().AddProvider(new crudefDbLoggerProvider());
+                    User user1 = new User { PassportSeria = "KM", PassportNumber = "123458", Name = "Tom", Age = 33 };
+                    User user2 = new User { PassportSeria = "KM", PassportNumber = "123459", Name = "Alice", Age = 26 };
+
+                    db.Users.Add(user1);
+                    db.Users.Add(user2);
+                    db.SaveChanges();
+
+                    var users = db.Users.ToList();
+                    Console.WriteLine("Данные после добавления:");
+                    foreach (User u in users)
+                    {
+                        Console.WriteLine($"{u.Id}.{u.Name} - {u.Age}");
+                    }
+
+                    Console.WriteLine();
+                    User user = new User { Name = "Tom" };
+                    Console.WriteLine($"Id перед добавлением в контекст {user.Id}");    // Id = 0
+                    db.Users.Add(user);
+                    db.SaveChanges();
+                    Console.WriteLine($"Id после добавления в базу данных {user.Id}");  // Id = 3
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[ERROR] -- {ex.Message}");
+                }
+
             }
             Console.Read();
         }
