@@ -17,6 +17,10 @@
         public bool IsMarried { get; set; }
 
         public string PassportNumber { get; set; }
+
         public string PassportSeria { get; set; }
+
+        public int? CompanyId { get; set; }
+        public Company Company { get; set; }
     }
 }

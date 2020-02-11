@@ -4,14 +4,16 @@ using CRUDEF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CRUDEF.Migrations
 {
     [DbContext(typeof(App2Context))]
-    partial class App2ContextModelSnapshot : ModelSnapshot
+    [Migration("20200211141738_AddCompany")]
+    partial class AddCompany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

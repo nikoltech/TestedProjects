@@ -100,31 +100,62 @@
             {
                 try
                 {
-                    //db.GetService<ILoggerFactory>().AddProvider(new crudefDbLoggerProvider());
-                    User user1 = new User { PassportSeria = "KM", PassportNumber = "123458", Name = "Tom", Age = 33 };
-                    User user2 = new User { PassportSeria = "KM", PassportNumber = "123459", Name = "Alice", Age = 26 };
+                    ////db.GetService<ILoggerFactory>().AddProvider(new crudefDbLoggerProvider());
+                    //User user1 = new User { PassportSeria = "KM", PassportNumber = "123458", Name = "Tom", Age = 33 };
+                    //User user2 = new User { PassportSeria = "KM", PassportNumber = "123459", Name = "Alice", Age = 26 };
 
-                    db.Users.Add(user1);
-                    db.Users.Add(user2);
+                    //db.Users.Add(user1);
+                    //db.Users.Add(user2);
+                    //db.SaveChanges();
+
+                    //var users = db.Users.ToList();
+                    //Console.WriteLine("Данные после добавления:");
+                    //foreach (User u in users)
+                    //{
+                    //    Console.WriteLine($"{u.Id}.{u.Name} - {u.Age}");
+                    //}
+
+                    //Console.WriteLine();
+                    //User user = new User { Name = "Tom" };
+                    //Console.WriteLine($"Id перед добавлением в контекст {user.Id}");    // Id = 0
+                    //db.Users.Add(user);
+                    //db.SaveChanges();
+                    //Console.WriteLine($"Id после добавления в базу данных {user.Id}");  // Id = 3
+                    
+                    _ = db.Database.ExecuteSqlCommand("TRUNCATE TABLE Users");
+                    // добавляем начальные данные
+                    Company microsoft = new Company { Name = "Microsoft" };
+                    Company google = new Company { Name = "Google" };
+                    db.Companies.AddRange(microsoft, google);
+                    db.SaveChanges();
+                    User tom = new User { Name = "Tom", Company = microsoft };
+                    User bob = new User { Name = "Bob", Company = google };
+                    User alice = new User { Name = "Alice", Company = microsoft };
+                    User kate = new User { Name = "Kate", Company = google };
+                    db.Users.AddRange(tom, bob, alice, kate);
                     db.SaveChanges();
 
+
+                    var companies = db.Companies.ToList();
+                    foreach (var c in companies) Console.WriteLine($"{c.Name}");
+
+                    // получаем пользователей
                     var users = db.Users.ToList();
-                    Console.WriteLine("Данные после добавления:");
-                    foreach (User u in users)
-                    {
-                        Console.WriteLine($"{u.Id}.{u.Name} - {u.Age}");
-                    }
+                    foreach (var user in users) Console.WriteLine($"{user.Name}");
 
-                    Console.WriteLine();
-                    User user = new User { Name = "Tom" };
-                    Console.WriteLine($"Id перед добавлением в контекст {user.Id}");    // Id = 0
-                    db.Users.Add(user);
+                    // Удаляем первую компанию
+                    var comp = db.Companies.FirstOrDefault();
+                    db.Companies.Remove(comp);
                     db.SaveChanges();
-                    Console.WriteLine($"Id после добавления в базу данных {user.Id}");  // Id = 3
+                    Console.WriteLine("\nСписок пользователей после удаления компании");
+                    // снова получаем пользователей
+                    users = db.Users.ToList();
+                    foreach (var user in users) Console.WriteLine($"{user.Name}");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"[ERROR] -- {ex.Message}");
+                    Console.WriteLine($"[ERROR] -- {ex.InnerException}");
                 }
 
             }
