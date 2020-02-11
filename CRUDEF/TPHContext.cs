@@ -18,5 +18,10 @@
         {
             optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=inheritedb;Trusted_Connection=True;");
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserTPH>().HasQueryFilter(u => u.Age >= 17);
+        }
     }
 }

@@ -213,11 +213,13 @@
                         foreach (Student s in students)
                             Console.WriteLine($"{s.Name}");
                     }
+                    Console.WriteLine("------------------------------------");
                 }
                 using (TPHContext db = new TPHContext())
                 {
-                    UserTPH user1 = new UserTPH { Name = "Tom" };
-                    UserTPH user2 = new UserTPH { Name = "Bob" };
+                    _ = db.Database.ExecuteSqlCommand("TRUNCATE TABLE Users");
+                    UserTPH user1 = new UserTPH { Name = "Tom", Age = 17 };
+                    UserTPH user2 = new UserTPH { Name = "Bob", Age = 10 };
                     db.Users.Add(user1);
                     db.Users.Add(user2);
 
@@ -229,11 +231,11 @@
 
                     db.SaveChanges();
 
-                    var users = db.Users.ToList();
+                    var users = db.Users.IgnoreQueryFilters().ToList();
                     Console.WriteLine("Все пользователи");
                     foreach (var user in users)
                     {
-                        Console.WriteLine(user.Name);
+                        Console.WriteLine($"{user.Name} Age - {user.Age}");
                     }
 
                     Console.WriteLine("\n Все работники");
