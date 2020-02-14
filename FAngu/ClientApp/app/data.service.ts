@@ -12,6 +12,10 @@ export class DataService {
         return this.http.get(this.url);
     }
 
+    getProduct(id: number) {
+        return this.http.get(this.url + '/' + id);
+    }
+
     createProduct(product: Product) {
         return this.http.post(this.url, product);
     }

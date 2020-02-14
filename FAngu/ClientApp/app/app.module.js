@@ -8,14 +8,30 @@ import { NgModule } from "@angular/core";
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from "@angular/common/http";
+import { RouterModule } from "@angular/router";
 import { AppComponent } from './app.component';
+import { ProductListComponent } from './product/product-list.component';
+import { ProductFormComponent } from './product/product-form.component';
+import { ProductCreateComponent } from './product/product-create.component';
+import { ProductEditComponent } from './product/product-edit.component';
+import { NotFoundComponent } from './not-found.component';
+import { DataService } from './data.service';
+// определение маршрутов
+var appRoutes = [
+    { path: '', component: ProductListComponent },
+    { path: 'create', component: ProductCreateComponent },
+    { path: 'edit/:id', component: ProductEditComponent },
+    { path: '**', component: NotFoundComponent }
+];
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
     AppModule = __decorate([
         NgModule({
-            imports: [BrowserModule, FormsModule, HttpClientModule],
-            declarations: [AppComponent],
+            imports: [BrowserModule, FormsModule, HttpClientModule, RouterModule.forRoot(appRoutes)],
+            declarations: [AppComponent, ProductListComponent, ProductCreateComponent, ProductEditComponent,
+                ProductFormComponent, NotFoundComponent],
+            providers: [DataService],
             bootstrap: [AppComponent]
         })
     ], AppModule);
