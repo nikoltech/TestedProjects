@@ -27,16 +27,23 @@ namespace ACore
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
+
             app.UseRouting();
 
             int x = 2;
-            app.UseEndpoints(endpoints =>
+            app.Use(async (context, next) =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    x = x * 2;  //  2 * 2 = 4
-                    await context.Response.WriteAsync($"Application Name: {env.ApplicationName} \n Result: {x}");
-                });
+                x = x * 2;      // 2 * 2 = 4
+                await next.Invoke();    // גûחמג app.Run
+                x = x * 2;      // 8 * 2 = 16
+                await context.Response.WriteAsync($"Result: {x}");
+                await context.Response.WriteAsync($"Result: {x}");
+            });
+
+            app.Run( async context =>
+            {
+                await context.Response.WriteAsync($"Application Name: {env.ApplicationName} \n Result: {x}");
             });
         }
     }
