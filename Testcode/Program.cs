@@ -103,7 +103,7 @@ namespace Testcode
         {
 
         }
-
+        */
         class A1
         {
             public virtual void Foo()
@@ -118,24 +118,24 @@ namespace Testcode
                 Console.Write("Class B");
             }
         }
-
-        //[Flags]
+    
+        [Flags]
         enum Operation
         {
-            None,
-            Addd,
-            Subtract,
-            Multiply,
-            Divide,
-            Some
-            //None = 0,
-            //Addd = 1,
-            //Subtract = 2,
-            //Multiply = 4,
-            //Divide = 8,
-            //Some = 16
+            //None,
+            //Addd,
+            //Subtract,
+            //Multiply,
+            //Divide,
+            //Some
+            None = 0,
+            Addd = 1,
+            Subtract = 2,
+            Multiply = 4,
+            Divide = 8,
+            Some = 16
         }
-
+    /*
         void Data(Operation op)
         {
             switch (op)
@@ -475,7 +475,34 @@ namespace Testcode
 
     class Program
     {
-        class a { int f;  }
+        interface dd
+        {
+            void rr();
+            void rf();
+        }
+        interface ddf : dd
+        {
+            new void rr();
+            void rf();
+        }
+        class a : dd, ddf 
+        { 
+            int f;
+
+             void ddf.rf()
+            {
+                Console.WriteLine("ddf");
+            }
+
+             void dd.rf()
+            {
+                Console.WriteLine("dd");
+            }
+            public void rr()
+            {
+                Console.WriteLine("rr");
+            }
+        }
 
         class b : a { string d; }
 
@@ -498,7 +525,47 @@ namespace Testcode
             return "write2";
         }
 
-        delegate void Operation();
+        delegate void OperationD();
+        class Person
+        { }
+
+        class Student : Person
+        { }
+
+        /// <summary>
+        /// Invariant
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        //interface IC<T>
+        //    where T : CT
+        //{
+        //    public T x { get; }
+        //}
+
+        /// <summary>
+        /// Contrvariance
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        //interface IC<in T>
+        //    where T : CT
+        //{
+        //    public T x { get; }
+        //}
+
+        // Covariance
+        interface IC<out T>
+            where T : CT
+        {
+            public T x { get; }
+        }
+        class C<T> : IC<T>
+            where T : CT
+        {
+            public T x { get; set; }
+        }
+        class CT { }
+        class CT2 : CT { }
+        class CT3 { }
 
         static void Main(string[] args)
         {
@@ -512,11 +579,32 @@ namespace Testcode
                 TestClass testClass = new TestClass();
                 Console.WriteLine(testClass.TestProperty);
 
-                for (int i = 0; i < 5; ++i)
+                for (int i = 0; i < 5; i++)
                 {
                     Console.WriteLine($"i={i}");
 
                 }
+                byte r = 1;
+                a af = new a();
+                ((dd)af).rf();
+                ((ddf)af).rf();
+                ((dd)af).rr();
+                ((ddf)af).rr();
+
+                IC<CT2> c = new C<CT>();
+
+
+                Operation op = Operation.Divide | Operation.Addd;
+                Console.WriteLine($"op {op}");
+
+                string @string = "ABC";
+                Console.WriteLine(@string);
+
+                #if DEBUG
+                Console.WriteLine("DEBUG");
+#else
+                Console.WriteLine("ELSE");  
+#endif
 
                 Func<int> d;
                 d = () => 0;
