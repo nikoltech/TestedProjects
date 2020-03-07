@@ -428,6 +428,31 @@ namespace Testcode
             StaticRoot = this;
         }
     }
+
+    public interface ISomeInterface
+    {
+        int TestProperty
+        {
+            // No access modifier allowed here
+            // because this is an interface.
+            get;
+        }
+    }
+
+    public class TestClass : ISomeInterface
+    {
+        public int TestProperty
+        {
+            // Cannot use access modifier here because
+            // this is an interface implementation.
+            get { return 10; }
+
+            // Interface property does not have set accessor,
+            // so access modifier is allowed.
+            protected set { }
+        }
+    }
+
     class Nested
     {
         public void DoSomeWork(string threadLocation)
@@ -450,6 +475,9 @@ namespace Testcode
 
     class Program
     {
+        class a { int f;  }
+
+        class b : a { string d; }
 
         static void CreateObjects()
         {
@@ -481,6 +509,15 @@ namespace Testcode
                 Console.Clear();
                 Console.WriteLine($"count - {++count}\n\n");
 
+                TestClass testClass = new TestClass();
+                Console.WriteLine(testClass.TestProperty);
+
+                for (int i = 0; i < 5; ++i)
+                {
+                    Console.WriteLine($"i={i}");
+
+                }
+
                 Func<int> d;
                 d = () => 0;
                 d += () => 1;
@@ -496,6 +533,7 @@ namespace Testcode
                 GC.Collect();
                 while (Root.StaticRoot == null) { }
                 Root.StaticRoot.Nested.DoSomeWork("Main");
+                
             }
             while (ConsoleKey.Escape != Console.ReadKey(false).Key);
 
