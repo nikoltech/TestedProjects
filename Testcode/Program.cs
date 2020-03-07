@@ -532,6 +532,7 @@ namespace Testcode
         class Student : Person
         { }
 
+        #region Invariant/Covariance/Contrvariance
         /// <summary>
         /// Invariant
         /// </summary>
@@ -566,6 +567,8 @@ namespace Testcode
         class CT { }
         class CT2 : CT { }
         class CT3 { }
+        #endregion
+
 
         static void Main(string[] args)
         {
@@ -591,8 +594,9 @@ namespace Testcode
                 ((dd)af).rr();
                 ((ddf)af).rr();
 
-                IC<CT2> c = new C<CT>();
-
+                #region Invariant/Covariance/Contrvariance code
+                IC<CT> c = new C<CT2>();
+                #endregion
 
                 Operation op = Operation.Divide | Operation.Addd;
                 Console.WriteLine($"op {op}");
