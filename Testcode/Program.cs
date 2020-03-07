@@ -550,7 +550,7 @@ namespace Testcode
         //interface IC<in T>
         //    where T : CT
         //{
-        //    public T x { get; }
+        //    public CT x { get; }
         //}
 
         // Covariance
