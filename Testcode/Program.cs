@@ -25,7 +25,6 @@ namespace Testcode
 
         public int wrap { get; set; }
     }
-
     class Wrap : CriticalFinalizerObject, IWrap, IDisposable
     {
         private static int init = 0;
@@ -446,16 +445,33 @@ namespace Testcode
             Console.WriteLine("Finalization of Nested");
             DoSomeWork("Finalize");
         }
+
     }
 
     class Program
     {
+
         static void CreateObjects()
         {
             Nested nested = new Nested();
             Root root = new Root();
             root.Nested = nested;
         }
+
+        static string write1()
+        {
+            Console.WriteLine($"SSwrite1");
+            return "write2";
+        }
+
+        static string write2()
+        {
+            Console.WriteLine($"SSwrite2");
+            return "write2";
+        }
+
+        delegate void Operation();
+
         static void Main(string[] args)
         {
             int count = 0;
@@ -465,12 +481,39 @@ namespace Testcode
                 Console.Clear();
                 Console.WriteLine($"count - {++count}\n\n");
 
+                Func<int> d;
+                d = () => 0;
+                d += () => 1;
+                d += () => 2;
+                Console.WriteLine(d());
+
+                Func<string> f = write1;
+                f += write2;
+                Console.WriteLine(f());
+
+                Console.WriteLine();
                 CreateObjects();
                 GC.Collect();
                 while (Root.StaticRoot == null) { }
                 Root.StaticRoot.Nested.DoSomeWork("Main");
             }
             while (ConsoleKey.Escape != Console.ReadKey(false).Key);
+
+            //int[] numbers = { -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6 };
+
+            //int n = numbers.Length; // длина массива
+            //int k = n / 2;          // середина массива
+            //int temp;               // вспомогательный элемент для обмена значениями
+            //for (int i = 0; i < k; i++)
+            //{
+            //    temp = numbers[i];
+            //    numbers[i] = numbers[n - i - 1];
+            //    numbers[n - i - 1] = temp;
+            //}
+            //foreach (int i in numbers)
+            //{
+            //    Console.Write($"{i} \t");
+            //}
         }
     }
 }
