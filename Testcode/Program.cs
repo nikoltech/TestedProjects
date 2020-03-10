@@ -677,7 +677,7 @@ namespace Testcode
 
                 #region ModifyNotModified
                 string s = "Hello, world";
-                ModifyString(s);
+                ModifyString(s); // Inside the method we create an new object and try change existing incoming reference to new. For this feature is need ref keyword!
                 Console.WriteLine("s = " + s);
 
                 ModifyModifieble modifieble = new ModifyModifieble();
