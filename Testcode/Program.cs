@@ -609,6 +609,28 @@ namespace Testcode
 
         delegate string GetInfo<in T>(T item);
         #endregion
+        
+        static IEnumerable<char> tt()
+        {
+            yield return 'A';
+            yield return 'A';
+            yield return 'A';
+        }
+
+        static void ModifyString(string s)
+        {
+            s = "Hello, I've been modified.";
+        }
+
+        static void ModifyClass(ModifyModifieble s)
+        {
+            s.ModifiableValue = "666";
+        }
+
+        class ModifyModifieble
+        {
+            public string ModifiableValue;
+        }
 
         static void Main(string[] args)
         {
@@ -640,16 +662,31 @@ namespace Testcode
                 IC<CT2> iCT2 = new C<CT>();
                 Console.WriteLine($"Invariant/Covariance/Contrvariance result -- {iCT2.x.GetInfo()}");
                 #endregion
-
+                
                 #region delegate Contrvariance code
-                GetInfo <D4> getInfo = (item) => item.GetStyle();
+                GetInfo<D4> getInfo = (item) => item.GetStyle();
                 GetInfo<D3> getInfo3 = (item) => item.GetInfo();
                 D4 d4 = new D4();
                 D3 d3 = new D3();
                 D5 d5 = new D5();
 
                 getInfo = getInfo3;
-                Console.WriteLine($"delegate Contrvariance result -- { getInfo(d4)}");
+                string delegateInvokationResult = getInfo == null ? "delegate is NULL" : getInfo(d4);
+                Console.WriteLine($"delegate Contrvariance result -- {delegateInvokationResult}");
+                #endregion
+
+                #region ModifyNotModified
+                string s = "Hello, world";
+                ModifyString(s);
+                Console.WriteLine("s = " + s);
+
+                ModifyModifieble modifieble = new ModifyModifieble();
+                modifieble.ModifiableValue = "5555";
+                Console.WriteLine("ModifyModifieble = " + modifieble.ModifiableValue);
+                ModifyClass(modifieble);
+                Console.WriteLine("ModifyModifieble = " + modifieble.ModifiableValue);
+                ModifyString(modifieble.ModifiableValue);
+                Console.WriteLine("ModifyModifieble = " + modifieble.ModifiableValue);
                 #endregion
 
                 Operation op = Operation.Divide | Operation.Addd;
