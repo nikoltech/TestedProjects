@@ -547,28 +547,68 @@ namespace Testcode
         /// Contrvariance
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        //interface IC<in T>
-        //    where T : CT
-        //{
-        //    public CT x { get; }
-        //}
+        interface IC<in T>
+            where T : CT, new()
+        {
+            public CT x { get; set; }
+            public string GetInfo();
+        }
 
         // Covariance
-        interface IC<out T>
-            where T : CT
-        {
-            public T x { get; }
-        }
+        //interface IC<out T>
+        //    where T : CT
+        //{
+        //    public T x { get; }
+        //}
+
         class C<T> : IC<T>
-            where T : CT
+            where T : CT, new()
         {
-            public T x { get; set; }
+            public CT x { get; set; } = new T();
+
+            public string GetInfo()
+            {
+                return this.GetInfo();
+            }
         }
-        class CT { }
-        class CT2 : CT { }
+        class CT 
+        {
+            public string GetInfo()
+            {
+                return "CT";
+            }
+        }
+        class CT2 : CT 
+        {
+            public string GetStyle()
+            {
+                return "CT2";
+            }
+        }
         class CT3 { }
         #endregion
 
+        #region delegate Contrvariance
+        class D { }
+        class D2 : D { }
+        class D3 : D2 
+        {
+            public string GetInfo()
+            {
+                return "D3";
+            }
+        }
+        class D4 : D3 
+        {
+            public string GetStyle()
+            {
+                return "D4";
+            }
+        }
+        class D5 : D4 { }
+
+        delegate string GetInfo<in T>(T item);
+        #endregion
 
         static void Main(string[] args)
         {
@@ -595,7 +635,21 @@ namespace Testcode
                 ((ddf)af).rr();
 
                 #region Invariant/Covariance/Contrvariance code
-                IC<CT> c = new C<CT2>();
+                //IC<CT> c = new C<CT2>();
+                CT cT = new CT();
+                IC<CT2> iCT2 = new C<CT>();
+                Console.WriteLine($"Invariant/Covariance/Contrvariance result -- {iCT2.x.GetInfo()}");
+                #endregion
+
+                #region delegate Contrvariance code
+                GetInfo <D4> getInfo = (item) => item.GetStyle();
+                GetInfo<D3> getInfo3 = (item) => item.GetInfo();
+                D4 d4 = new D4();
+                D3 d3 = new D3();
+                D5 d5 = new D5();
+
+                getInfo = getInfo3;
+                Console.WriteLine($"delegate Contrvariance result -- { getInfo(d4)}");
                 #endregion
 
                 Operation op = Operation.Divide | Operation.Addd;
