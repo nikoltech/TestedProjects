@@ -553,7 +553,10 @@ namespace Testcode
             public CT x { get; set; }
             public string GetInfo();
         }
-
+        struct f
+        {
+            string fd;
+        }
         // Covariance
         //interface IC<out T>
         //    where T : CT
@@ -565,9 +568,10 @@ namespace Testcode
             where T : CT, new()
         {
             public CT x { get; set; } = new T();
-
+            public static string xd = "gg";
             public string GetInfo()
             {
+                var t = xd;
                 return this.GetInfo();
             }
         }
@@ -632,6 +636,30 @@ namespace Testcode
             public string ModifiableValue;
         }
 
+
+        internal class AG
+        {
+            public void SomeMethod()
+            {
+                Console.WriteLine("A.SomeMethod");
+            }
+        }
+
+        internal class BG : AG
+        {
+            new void SomeMethod()
+            {
+                Console.WriteLine("B.SomeMethod");
+            }
+        }
+        internal class CG : BG
+        {
+            public void CallSomeMethod()
+            {
+                SomeMethod();
+            }
+        }
+
         static void Main(string[] args)
         {
             int count = 0;
@@ -688,6 +716,8 @@ namespace Testcode
                 ModifyString(modifieble.ModifiableValue);
                 Console.WriteLine("ModifyModifieble = " + modifieble.ModifiableValue);
                 #endregion
+
+                new CG().CallSomeMethod();
 
                 Operation op = Operation.Divide | Operation.Addd;
                 Console.WriteLine($"op {op}");
