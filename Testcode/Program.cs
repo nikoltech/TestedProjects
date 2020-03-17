@@ -654,15 +654,122 @@ namespace Testcode
         }
         internal class CG : BG
         {
+            int hh;
             public void CallSomeMethod()
             {
                 SomeMethod();
             }
+            class fff
+            {
+                int jj;
+                void gf(CG cG)
+                {
+                    cG.hh = 8;
+                }
+            }
         }
 
+        interface IList
+        {
+             int Count { get; set; }
+        }
+
+        interface ICounter
+        {
+            void Count(int i);
+        }
+
+        interface IListCounter : IList, ICounter { }
+
+        class C
+        {
+            void Count(int i) { }
+            void t(int i)
+            {
+
+            }
+            void Test(IListCounter x)      // 1 
+            {
+                x.Count(1);                // 2 
+                ((IList)x).Count = 1;             // 3 
+            }
+        }
+
+        internal class AH
+        {
+            private int i = initA();
+            public static int initA() { return 2; }
+
+            public AH()
+            { print(); }
+
+            public virtual void print()
+            { Console.Write(i + "A "); }
+        }
+        internal class BH : AH
+        {
+            private int i = initB();
+            public static int initB() { return 8; }
+
+            public override void print()
+            { Console.Write(i + "B "); }
+        }
+
+        static int AverageInt(int a, int b, int c)
+        {
+            if (a > b)
+            {
+                if (b > c)
+                {
+                    return b;
+                }
+                else if (a > c)
+                {
+                    return c;
+                }
+                else return a;
+            }
+            else
+            {
+                if (a > c)
+                {
+                    return a;
+                }
+                else if (b > c)
+                {
+                    return c;
+                }
+                else return b;
+            }
+        }
+
+        static int AverageInt3(int a, int b, int c)
+        {
+            return a > b ?
+                b > c ? b : a > c ? c : a
+                : a > c ? a : b > c ? c : b;
+        }
+
+        static int AverageInt2(int a, int b, int c)
+        {
+            return (a > b && a < c) || (a > c && a < b) ? a : ((b > a && b < c) || (b > c && b < a) ? b : c);
+        }
         static void Main(string[] args)
         {
-            int count = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Enter integer a b c:\n\n");
+
+                Int32.TryParse(Console.ReadLine(), out int a);
+                Int32.TryParse(Console.ReadLine(), out int b);
+                Int32.TryParse(Console.ReadLine(), out int c);
+
+                Console.WriteLine($"Average3 int({a},{b},{c}): {AverageInt3(a, b, c)}");
+
+                Console.WriteLine("\n\nPress ANY for continue or ESCAPE for exit...");
+            } while (ConsoleKey.Escape != Console.ReadKey(false).Key);
+            int count = 0;/*
             do
             {
                 Root.StaticRoot = null;
@@ -683,6 +790,17 @@ namespace Testcode
                 ((ddf)af).rf();
                 ((dd)af).rr();
                 ((ddf)af).rr();
+
+                Console.WriteLine($"Average int(1, 2, 3): {AverageInt(1, 2, 3)}");
+                Console.WriteLine($"Average int(1, 3, 2): {AverageInt(1, 3, 2)}");
+                Console.WriteLine($"Average int(3, 2, 1): {AverageInt(3, 2, 1)}");
+                Console.WriteLine($"Average int(3, 1, 2): {AverageInt(3, 1, 2)}");
+                Console.WriteLine($"Average int(2, 1, 3): {AverageInt(2, 1, 3)}");
+                Console.WriteLine($"Average int(2, 3, 1): {AverageInt(2, 3, 1)}");
+                Console.WriteLine($"Average int(2, 2, 1): {AverageInt(2, 2, 1)}");
+                Console.WriteLine($"Average int(2, 2, 3): {AverageInt(2, 2, 3)}");
+                Console.WriteLine($"Average2 int(2, 2, 3): {AverageInt2(2, 2, 3)}");
+                Console.WriteLine($"Average3 int(2, 2, 3): {AverageInt3(2, 2, 3)}");
 
                 #region Invariant/Covariance/Contrvariance code
                 //IC<CT> c = new C<CT2>();
@@ -718,6 +836,9 @@ namespace Testcode
                 #endregion
 
                 new CG().CallSomeMethod();
+                AH a = new BH();
+                a.print();
+                Console.WriteLine();
 
                 Operation op = Operation.Divide | Operation.Addd;
                 Console.WriteLine($"op {op}");
@@ -749,7 +870,7 @@ namespace Testcode
                 
             }
             while (ConsoleKey.Escape != Console.ReadKey(false).Key);
-
+            */
             //int[] numbers = { -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6 };
 
             //int n = numbers.Length; // длина массива
