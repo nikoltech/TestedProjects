@@ -473,6 +473,34 @@ namespace Testcode
 
     }
 
+    public class fr
+    {
+        public virtual int F {get;}
+
+        public fr()
+        {
+            Console.WriteLine("FFFFRRRRRRRRRRRRR");
+        }
+    }
+    public partial class ft
+    {
+        partial void Foo();
+
+    }
+    public partial class ft : fr
+    {
+        static ft()
+        {
+            Console.WriteLine("FFFTTTTTTTTTT");
+
+        }
+        partial void Foo() { int i = 0; }
+        public static void Run()
+        {
+            Console.WriteLine("Runned");
+        }
+    }
+
     class Program
     {
         interface dd
@@ -742,9 +770,12 @@ namespace Testcode
                 else return b;
             }
         }
+        
+        
 
         static int AverageInt3(int a, int b, int c)
         {
+            int[,] ff = new int[2, 1] { { 1}, { 2} };
             return a > b ?
                 b > c ? b : a > c ? c : a
                 : a > c ? a : b > c ? c : b;
@@ -758,7 +789,11 @@ namespace Testcode
         {
             do
             {
+                fr[] frs = new fr[1];
+                ft[] fts = new ft[1] { new ft()};
+                frs = fts;
                 Console.Clear();
+                ft.Run();
                 Console.WriteLine("Enter integer a b c:\n\n");
 
                 Int32.TryParse(Console.ReadLine(), out int a);
@@ -769,7 +804,7 @@ namespace Testcode
 
                 Console.WriteLine("\n\nPress ANY for continue or ESCAPE for exit...");
             } while (ConsoleKey.Escape != Console.ReadKey(false).Key);
-            int count = 0;/*
+            /*int count = 0;
             do
             {
                 Root.StaticRoot = null;
