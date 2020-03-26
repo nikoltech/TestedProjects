@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Runtime.ConstrainedExecution;
+using System.Collections;
 
 namespace Testcode
 {
@@ -500,9 +501,14 @@ namespace Testcode
             Console.WriteLine("Runned");
         }
     }
-
+    public static class bugaga 
+    {
+        static bugaga() { }
+        public static void i() { }
+    }
     class Program
     {
+        static int gggg { get; }
         interface dd
         {
             void rr();
@@ -780,20 +786,53 @@ namespace Testcode
                 b > c ? b : a > c ? c : a
                 : a > c ? a : b > c ? c : b;
         }
-
+        private static void fgg()
+        { }
         static int AverageInt2(int a, int b, int c)
         {
             return (a > b && a < c) || (a > c && a < b) ? a : ((b > a && b < c) || (b > c && b < a) ? b : c);
         }
+        delegate void My();
+        static event My eve;
+
         static void Main(string[] args)
         {
             do
             {
+                
+                bugaga.i();
+                float aa = 10.5f;
+                int ffg = (int)aa;
+                object fff;
+                Thread thread = new Thread((x) => { });
+                fr[] frss = new fr[3] { new fr(), new fr(), new fr()};
+
                 fr[] frs = new fr[1];
                 ft[] fts = new ft[1] { new ft()};
                 frs = fts;
                 Console.Clear();
                 ft.Run();
+                //int[,] fff = new int[4,5];
+                int bb = 1;
+                if (++bb < 2)
+                Console.WriteLine("GG");
+                byte bf = 2;
+                bf--;
+                ICollection r;
+                var query = from x in Enumerable.Range(0,6)
+                            join y in Enumerable.Range(3,9)
+                            on x equals y select x;
+                foreach (var q in query) Console.Write(q);
+
+                Console.WriteLine();
+                Console.WriteLine(1+2+"kyky"+3+4);
+
+                eve += () => Console.WriteLine("1t");
+                eve += () => Console.WriteLine("2t");
+                eve -= () => Console.WriteLine("1t");
+                eve.Invoke();
+
+                Console.WriteLine(bf);
                 Console.WriteLine("Enter integer a b c:\n\n");
 
                 Int32.TryParse(Console.ReadLine(), out int a);
@@ -801,6 +840,7 @@ namespace Testcode
                 Int32.TryParse(Console.ReadLine(), out int c);
 
                 Console.WriteLine($"Average3 int({a},{b},{c}): {AverageInt3(a, b, c)}");
+
 
                 Console.WriteLine("\n\nPress ANY for continue or ESCAPE for exit...");
             } while (ConsoleKey.Escape != Console.ReadKey(false).Key);
