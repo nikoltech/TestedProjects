@@ -794,12 +794,52 @@ namespace Testcode
         }
         delegate void My();
         static event My eve;
+        static byte ty;
+
+
+        class P
+        { }
+        class Q : P
+        { }
+
+        class A1
+        {
+            public void abc(Q q)
+            {
+                Console.WriteLine("abc из A");
+            }
+        }
+
+        class B1 : A1
+        {
+            public void abc(P p)
+            {
+                Console.WriteLine("abc из B");
+            }
+        }
+
+        static bool SomeMethod1()
+        {
+            Console.WriteLine("Метод 1");
+            return false;
+        }
+
+        static bool SomeMethod2()
+        {
+            Console.WriteLine("Метод 2");
+            return true;
+        }
 
         static void Main(string[] args)
         {
             do
             {
                 
+                
+                int ad = 3;
+                double fd = ad;
+                ushort f = 'e';
+                byte fdf = (byte)'f';
                 bugaga.i();
                 float aa = 10.5f;
                 int ffg = (int)aa;
@@ -811,6 +851,21 @@ namespace Testcode
                 ft[] fts = new ft[1] { new ft()};
                 frs = fts;
                 Console.Clear();
+
+
+
+
+                if (SomeMethod1() && SomeMethod2())
+                {
+                    Console.WriteLine("блок if выполнен");
+                }
+
+                B1 b1 = new B1();
+                b1.abc(new Q());
+                
+                float tg = 5;
+                tg = tg / 0;
+                Console.WriteLine(tg);
                 ft.Run();
                 //int[,] fff = new int[4,5];
                 int bb = 1;
