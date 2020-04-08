@@ -703,7 +703,7 @@ namespace Testcode
             }
         }
 
-        interface IList
+        interface IList2
         {
              int Count { get; set; }
         }
@@ -713,7 +713,7 @@ namespace Testcode
             void Count(int i);
         }
 
-        interface IListCounter : IList, ICounter { }
+        interface IListCounter : IList2, ICounter { }
 
         class C
         {
@@ -725,7 +725,7 @@ namespace Testcode
             void Test(IListCounter x)      // 1 
             {
                 x.Count(1);                // 2 
-                ((IList)x).Count = 1;             // 3 
+                ((IList2)x).Count = 1;             // 3 
             }
         }
 
@@ -830,11 +830,42 @@ namespace Testcode
             return true;
         }
 
+        delegate IEnumerable<int> intsDel();
+
+        static class Katavr 
+        {
+            static Katavr() { }
+        }
+
+        public class ExThread
+        {
+
+            // Non-Static method 
+            public void mythread()
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    Console.WriteLine(x);
+                    Thread.Sleep(1000);
+                }
+            }
+
+            // Non-Static method 
+            public void mythread1()
+            {
+                Console.WriteLine("2nd thread is Working..");
+            }
+
+            public void mythread2()
+            {
+                Console.WriteLine("3nd thread is Working..");
+            }
+        }
+
         static void Main(string[] args)
         {
             do
             {
-                
                 
                 int ad = 3;
                 double fd = ad;
@@ -853,7 +884,29 @@ namespace Testcode
                 Console.Clear();
 
 
+                // Creating instance for 
+                // mythread() method 
+                ExThread obj = new ExThread();
 
+                // Creating and initializing threads  
+                Thread thr1 = new Thread(new ThreadStart(obj.mythread));
+                Thread thr2 = new Thread(new ThreadStart(obj.mythread1));
+                Thread thr3 = new Thread(new ThreadStart(obj.mythread2));
+                thr1.Start();
+
+                // Join thread 
+                thr1.Join();
+                thr2.Start();
+                thr3.Start();
+
+                decimal x12 = decimal.MaxValue;
+                decimal y12 = decimal.MaxValue;
+
+                //unchecked
+                //{
+                //    decimal z = x12 * y12;
+                //    Console.WriteLine(z.ToString());
+                //}
 
                 if (SomeMethod1() && SomeMethod2())
                 {
