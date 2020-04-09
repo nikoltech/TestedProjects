@@ -8,6 +8,7 @@ using System.Collections;
 
 namespace Testcode
 {
+    #region others...
     interface IWrap
     {
         int wrap { get; set; }
@@ -432,12 +433,22 @@ namespace Testcode
 
     public interface ISomeInterface
     {
+       
         int TestProperty
         {
             // No access modifier allowed here
             // because this is an interface.
             get;
         }
+
+        void move(out int t) 
+        {
+            int tmp = this.Run();
+            t = this.Success(tmp) ? tmp : 0;
+        }
+
+        int Run();
+        bool Success(int run);
     }
 
     public class TestClass : ISomeInterface
@@ -450,7 +461,23 @@ namespace Testcode
 
             // Interface property does not have set accessor,
             // so access modifier is allowed.
-            protected set { }
+            protected set {  }
+        }
+
+        //public void move(out int f)
+        //{
+        //    f = 2 + 2;
+        //}
+
+        public int Run()
+        {
+            //this.move(out int t); // do not have an acces from interface
+            return new Random().Next(0, 1);
+        }
+
+        public bool Success(int run)
+        {
+            return run > 0;
         }
     }
 
@@ -506,8 +533,26 @@ namespace Testcode
         static bugaga() { }
         public static void i() { }
     }
+
+    class Bas1
+    {
+        public string Do() => "Bas1";
+    }
+    class Bas2 : Bas1
+    {
+        public string Do() => "Bas2";
+
+        public string Write()
+        {
+            return Do();
+        }
+    }
+
+    #endregion
+
     class Program
     {
+        #region fields, classes etc...
         static int gggg { get; }
         interface dd
         {
@@ -862,11 +907,24 @@ namespace Testcode
             }
         }
 
+        class CheckIndexer
+        {
+            public int[] innerMass;
+
+            public int this[int i]
+            {
+                get { return innerMass[i]; }
+                set { innerMass[i] = value; }
+            }
+        }
+        #endregion
+
         static void Main(string[] args)
         {
             do
             {
-                
+                CheckIndexer check = new CheckIndexer();
+
                 int ad = 3;
                 double fd = ad;
                 ushort f = 'e';
@@ -883,21 +941,25 @@ namespace Testcode
                 frs = fts;
                 Console.Clear();
 
+                TestClass testClass = new TestClass();
+                ((ISomeInterface)testClass).move(out int france);
+                Console.WriteLine($"Test ISomeInterface ->  {france}");
 
+                Console.WriteLine(new Bas2().Write());
                 // Creating instance for 
                 // mythread() method 
                 ExThread obj = new ExThread();
 
                 // Creating and initializing threads  
-                Thread thr1 = new Thread(new ThreadStart(obj.mythread));
-                Thread thr2 = new Thread(new ThreadStart(obj.mythread1));
-                Thread thr3 = new Thread(new ThreadStart(obj.mythread2));
-                thr1.Start();
+                //Thread thr1 = new Thread(new ThreadStart(obj.mythread));
+                //Thread thr2 = new Thread(new ThreadStart(obj.mythread1));
+                //Thread thr3 = new Thread(new ThreadStart(obj.mythread2));
+                //thr1.Start();
 
-                // Join thread 
-                thr1.Join();
-                thr2.Start();
-                thr3.Start();
+                //// Join thread 
+                //thr1.Join();
+                //thr2.Start();
+                //thr3.Start();
 
                 decimal x12 = decimal.MaxValue;
                 decimal y12 = decimal.MaxValue;
