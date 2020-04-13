@@ -549,7 +549,12 @@ namespace Testcode
     }
 
     #endregion
-
+    class AtrTestAttribute : Attribute
+    {
+        public int FAttr { get; set; } = 15;
+    }
+    
+    [AtrTest]
     class Program
     {
         #region fields, classes etc...
@@ -918,11 +923,27 @@ namespace Testcode
             }
         }
         #endregion
+        
+
+
+        public static void SomethDo()
+        {
+            bool isdef = Attribute.IsDefined(typeof(Program), typeof(AtrTestAttribute));
+            Attribute attr = System.Attribute.GetCustomAttribute(typeof(Program), typeof(AtrTestAttribute));
+
+            if (!isdef) { Console.WriteLine($"AtrTest is not defined!"); }
+
+            if (attr is AtrTestAttribute)
+            {
+                Console.WriteLine($"AtrTest: FAttr is {(attr as AtrTestAttribute).FAttr}");
+            }
+        }
 
         static void Main(string[] args)
         {
             do
             {
+                
                 CheckIndexer check = new CheckIndexer();
 
                 int ad = 3;
@@ -939,7 +960,11 @@ namespace Testcode
                 fr[] frs = new fr[1];
                 ft[] fts = new ft[1] { new ft()};
                 frs = fts;
-                Console.Clear();
+                Console.Clear(); ////////////////////////////////////////////////////////////
+
+
+
+                SomethDo();
 
                 TestClass testClass = new TestClass();
                 ((ISomeInterface)testClass).move(out int france);
