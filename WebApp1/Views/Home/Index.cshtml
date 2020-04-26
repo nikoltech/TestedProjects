@@ -6,3 +6,17 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+<label class="" ></label>
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <h4>Check post</h4>
+    <br />
+    @Html.ValidationSummary("", new { @class = "text-danger"})
+
+    <input type="submit" value="PUSH" class="btn btn-dark"/>
+}
+
+<img asp-append-version="true" src="~/favicon.ico" />
