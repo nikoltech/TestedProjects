@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -20,7 +21,16 @@ namespace WebApp1.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View("Index", "");
+        }
+
+        [HttpPost]
+        public IActionResult SomePost()
+        {
+            string tmp = HttpContext.Request.Form["Identity"];
+            tmp = tmp ?? "";
+            ViewBag.PostedData = tmp;
+            return this.View("Index", tmp);
         }
 
         public IActionResult Privacy()
