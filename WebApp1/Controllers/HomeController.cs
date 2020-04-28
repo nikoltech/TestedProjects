@@ -28,7 +28,7 @@ namespace WebApp1.Controllers
         public IActionResult SomePost()
         {
             string tmp = HttpContext.Request.Form["Identity"];
-            tmp = tmp ?? "";
+            tmp ??= "";
             ViewBag.PostedData = tmp;
             return this.View("Index", tmp);
         }
