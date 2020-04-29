@@ -17,11 +17,16 @@ namespace WebAppSome
     using WebAppSome.Repositories;
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
         {
             Configuration = configuration;
 
-            var builder = new ConfigurationBinder().
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables()
+                .AddConfiguration(configuration);
         }
 
         public IConfiguration Configuration { get; }
@@ -35,7 +40,7 @@ namespace WebAppSome
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => // CookieAuthenticationOptions
                 {
-                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("Account/Login");
+                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
                 });
 
             // Resolve dependencies
