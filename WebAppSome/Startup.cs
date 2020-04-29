@@ -20,6 +20,8 @@ namespace WebAppSome
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            var builder = new ConfigurationBinder().
         }
 
         public IConfiguration Configuration { get; }
