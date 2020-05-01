@@ -1,7 +1,7 @@
-﻿namespace WebAppSome.Interfaces
+﻿namespace WebAppSome.DataAccess.Repositories
 {
     using System.Threading.Tasks;
-    using WebAppSome.Entities;
+    using WebAppSome.DataAccess.Entities;
 
     public interface IRepository
     {

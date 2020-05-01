@@ -1,23 +1,17 @@
 namespace WebAppSome
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.HttpsPolicy;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.IdentityModel.Tokens;
+    using WebAppSome.DataAccess;
+    using WebAppSome.DataAccess.Repositories;
     using WebAppSome.Infrastructure;
-    using WebAppSome.Interfaces;
 
-    using WebAppSome.Repositories;
     public class Startup
     {
         public Startup(IConfiguration configuration, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
@@ -37,7 +31,8 @@ namespace WebAppSome
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(options => options.UseSqlServer(this.Configuration["Data:ConectionString"]));
+            services.AddDbContext<DataContext>(options => 
+                options.UseSqlServer(this.Configuration["Data:ConectionString"], o => o.MigrationsAssembly("WebAppSome")));
 
             //Auth
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

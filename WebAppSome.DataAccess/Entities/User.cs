@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WebAppSome.Entities
+﻿namespace WebAppSome.DataAccess.Entities
 {
     public class User
     {

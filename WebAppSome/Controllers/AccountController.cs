@@ -9,9 +9,9 @@
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
     using System.Threading.Tasks;
-    using WebAppSome.Entities;
+    using WebAppSome.DataAccess.Entities;
+    using WebAppSome.DataAccess.Repositories;
     using WebAppSome.Infrastructure;
-    using WebAppSome.Interfaces;
     using WebAppSome.Models;
 
     public class AccountController : Controller

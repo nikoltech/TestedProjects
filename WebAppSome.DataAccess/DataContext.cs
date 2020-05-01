@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-namespace WebAppSome
+﻿namespace WebAppSome.DataAccess
 {
-    using WebAppSome.Entities;
+    using Microsoft.EntityFrameworkCore;
+    using WebAppSome.DataAccess.Entities;
 
     public class DataContext : DbContext
     {

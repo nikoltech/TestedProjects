@@ -1,10 +1,9 @@
-﻿namespace WebAppSome.Repositories
+﻿namespace WebAppSome.DataAccess.Repositories
 {
     using Microsoft.EntityFrameworkCore;
     using System;
     using System.Threading.Tasks;
-    using WebAppSome.Entities;
-    using WebAppSome.Interfaces;
+    using WebAppSome.DataAccess.Entities;
 
     public class Repository : IRepository
     {
