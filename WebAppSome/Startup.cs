@@ -5,6 +5,7 @@ namespace WebAppSome
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authentication.Cookies;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,6 +13,8 @@ namespace WebAppSome
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.IdentityModel.Tokens;
+    using WebAppSome.Infrastructure;
     using WebAppSome.Interfaces;
 
     using WebAppSome.Repositories;
@@ -37,11 +40,37 @@ namespace WebAppSome
             services.AddDbContext<DataContext>(options => options.UseSqlServer(this.Configuration["Data:ConectionString"]));
 
             //Auth
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => // CookieAuthenticationOptions
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => // token generating by app
                 {
-                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        // укзывает, будет ли валидироваться издатель при валидации токена
+                        ValidateIssuer = true,
+                        // строка, представляющая издателя
+                        ValidIssuer = AuthOptions.ISSUER,
+
+                        // будет ли валидироваться потребитель токена
+                        ValidateAudience = true,
+                        // установка потребителя токена
+                        ValidAudience = AuthOptions.AUDIENCE,
+
+                        // будет ли валидироваться время существования
+                        ValidateLifetime = true,
+
+                        // валидация ключа безопасност
+                        ValidateIssuerSigningKey = true,
+                        // установка ключа безопасности
+                        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
+                    };
                 });
+                //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                //    .AddCookie(options => // CookieAuthenticationOptions
+                //    {
+                //        options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+                //    });
+
 
             // Resolve dependencies
             services.AddScoped<IRepository, Repository>();
@@ -67,6 +96,7 @@ namespace WebAppSome
 
             app.UseRouting();
 
+            // Use with default auth and with tokens
             app.UseAuthentication();
             app.UseAuthorization();
 
