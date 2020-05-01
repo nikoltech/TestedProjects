@@ -23,9 +23,28 @@
 
 
 
+@section Scripts {
+    <script>
 
-<script>
         var tokenKey = "accessToken";
+        var username = "username";
+
+        $(document).ready(function () {
+            var token = sessionStorage.getItem(tokenKey);
+            var currentUser = sessionStorage.getItem(username);
+            console.log(token);
+            console.log(currentUser);
+
+            //alert(token);
+            if (token != null) {
+                // изменяем содержимое и видимость блоков на странице
+                document.getElementById("userName").innerText = currentUser;
+                document.getElementById("userInfo").style.display = "block";
+                document.getElementById("loginForm").style.display = "none";
+            }
+        });
+
+
 
         // отпавка запроса к контроллеру AccountController для получения токена
         async function getTokenAsync() {
@@ -39,7 +58,7 @@
             // отправляет запрос и получаем ответ
             const response = await fetch("/token", {
                 method: "POST",
-                headers: {"Accept": "application/json"},
+                headers: { "Accept": "application/json" },
                 body: formData
             });
             // получаем данные
@@ -54,8 +73,10 @@
                 document.getElementById("loginForm").style.display = "none";
                 // сохраняем в хранилище sessionStorage токен доступа
                 sessionStorage.setItem(tokenKey, data.access_token);
+                sessionStorage.setItem(username, data.username);
                 console.log(data.access_token);
-             }
+                console.log(data.username);
+            }
             else {
                 // если произошла ошибка, из errorText получаем текст ошибки
                 console.log("Error: ", response.status, data.errorText);
@@ -96,6 +117,7 @@
             document.getElementById("userInfo").style.display = "none";
             document.getElementById("loginForm").style.display = "block";
             sessionStorage.removeItem(tokenKey);
+            sessionStorage.removeItem(username);
         });
 
 
@@ -112,4 +134,6 @@
             e.preventDefault();
             getData("/api/values/getrole");
         });
-</script>
+    </script>
+
+}
