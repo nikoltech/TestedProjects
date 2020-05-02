@@ -36,14 +36,13 @@ namespace WebAppSome
             services.AddDbContext<DataContext>(options => 
                 options.UseSqlServer(this.Configuration["Data:ConectionString"], o => o.MigrationsAssembly("WebAppSome")));
 
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<DataContext>();
-            services.Configure<IdentityOptions>(options =>
+            services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 6;
-            });
+            })
+                .AddEntityFrameworkStores<DataContext>();
 
             //Auth
             //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
