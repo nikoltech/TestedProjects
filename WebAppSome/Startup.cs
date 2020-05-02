@@ -38,6 +38,12 @@ namespace WebAppSome
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<DataContext>();
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+            });
 
             //Auth
             //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -75,7 +75,8 @@
             {
                 try
                 {
-                    var result = await this.SignInManager.PasswordSignInAsync(model.Email.Split()[0], model.Password, model.RememberMe, false);
+                    User signedUser = await this.UserManager.FindByEmailAsync(model.Email);
+                    var result = await this.SignInManager.PasswordSignInAsync(signedUser.UserName, model.Password, model.RememberMe, false);
                     if (result.Succeeded)
                     {
                         if (string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
@@ -117,8 +118,8 @@
 
                     if (user == null)
                     {
-                        user = new User { Email = model.Email, UserName = model.Email.Split('@')[0], Year = model.Year };
-                        var result = await this.UserManager.CreateAsync(user);
+                        user = new User { Email = model.Email, UserName = this.GetUsernameFromEmail(model.Email), Year = model.Year, /*optional*/EmailConfirmed = true };
+                        var result = await this.UserManager.CreateAsync(user, model.Password);
                         
                         if (result.Succeeded)
                         {
@@ -155,6 +156,11 @@
         #endregion
 
         #region private methods
+        private string GetUsernameFromEmail(string email)
+        {
+            return email?.Split('@')[0];
+        }
+
         /// <summary>
         /// Create ClaimsIdentity from User entity
         /// </summary>

@@ -9,7 +9,8 @@
 <a asp-action="Register" asp-controller="Account">Регистрация</a>
 
 <form asp-action="Login" asp-controller="Account" asp-antiforgery="true" asp-route-returnUrl="@Model.ReturnUrl">
-    <div class="validation" asp-validation-summary="ModelOnly" />
+    <div class="validation" asp-validation-summary="All" />
+    @Html.ValidationSummary()
     <div>
         <div class="form-group">
             <label asp-for="Email">Введите Email</label>
