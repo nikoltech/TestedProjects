@@ -3,12 +3,14 @@ namespace WebAppSome
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.IdentityModel.Tokens;
     using WebAppSome.DataAccess;
+    using WebAppSome.DataAccess.Entities;
     using WebAppSome.DataAccess.Repositories;
     using WebAppSome.Infrastructure;
 
@@ -34,32 +36,35 @@ namespace WebAppSome
             services.AddDbContext<DataContext>(options => 
                 options.UseSqlServer(this.Configuration["Data:ConectionString"], o => o.MigrationsAssembly("WebAppSome")));
 
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<DataContext>();
+
             //Auth
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => // token generating by app
-                {
-                    options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        // укзывает, будет ли валидироваться издатель при валидации токена
-                        ValidateIssuer = true,
-                        // строка, представляющая издателя
-                        ValidIssuer = AuthOptions.ISSUER,
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                //.AddJwtBearer(options => // token generating by app
+                //{
+                //    options.RequireHttpsMetadata = false;
+                //    options.TokenValidationParameters = new TokenValidationParameters
+                //    {
+                //        // укзывает, будет ли валидироваться издатель при валидации токена
+                //        ValidateIssuer = true,
+                //        // строка, представляющая издателя
+                //        ValidIssuer = AuthOptions.ISSUER,
 
-                        // будет ли валидироваться потребитель токена
-                        ValidateAudience = true,
-                        // установка потребителя токена
-                        ValidAudience = AuthOptions.AUDIENCE,
+                //        // будет ли валидироваться потребитель токена
+                //        ValidateAudience = true,
+                //        // установка потребителя токена
+                //        ValidAudience = AuthOptions.AUDIENCE,
 
-                        // будет ли валидироваться время существования
-                        ValidateLifetime = true,
+                //        // будет ли валидироваться время существования
+                //        ValidateLifetime = true,
 
-                        // валидация ключа безопасност
-                        ValidateIssuerSigningKey = true,
-                        // установка ключа безопасности
-                        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
-                    };
-                });
+                //        // валидация ключа безопасност
+                //        ValidateIssuerSigningKey = true,
+                //        // установка ключа безопасности
+                //        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
+                //    };
+                //});
                 //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 //    .AddCookie(options => // CookieAuthenticationOptions
                 //    {

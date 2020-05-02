@@ -1,11 +1,9 @@
 ﻿namespace WebAppSome.DataAccess.Entities
 {
-    public class User
+    using Microsoft.AspNetCore.Identity;
+    
+    public class User : IdentityUser
     {
-        public int Id { get; set; }
-
-        public string Email { get; set; }
-
-        public string Password { get; set; }
+        public int Year { get; set; }
     }
 }

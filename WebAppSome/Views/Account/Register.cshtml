@@ -6,7 +6,7 @@
 
 <h2>Регистрация</h2>
 
-<form asp-action="Register" asp-controller="Account" asp-anti-forgery="true">
+<form method="post" asp-action="Register" asp-controller="Account" asp-antiforgery="true">
     <div class="validation" asp-validation-summary="ModelOnly" />
     <div>
         <div>
@@ -23,6 +23,11 @@
             <label asp-for="ConfirmPassword">Повторите пароль</label><br />
             <input asp-for="ConfirmPassword" />
             <span asp-validation-for="ConfirmPassword" />
+        </div>
+        <div>
+            <label asp-for="Year">Год рождения</label><br />
+            <input type="text" asp-for="Year" />
+            <span asp-validation-for="Year" />
         </div>
         <div>
             <input type="submit" value="Регистрация" />
