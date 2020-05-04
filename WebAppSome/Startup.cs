@@ -9,6 +9,7 @@ namespace WebAppSome
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.IdentityModel.Tokens;
+    using WebAppSome.BusinessLogic.Services.Email;
     using WebAppSome.DataAccess;
     using WebAppSome.DataAccess.Entities;
     using WebAppSome.DataAccess.Repositories;
@@ -42,43 +43,54 @@ namespace WebAppSome
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 6;
             })
-                .AddEntityFrameworkStores<DataContext>();
+                .AddEntityFrameworkStores<DataContext>()
+                .AddDefaultTokenProviders();
 
             //Auth
             //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                //.AddJwtBearer(options => // token generating by app
-                //{
-                //    options.RequireHttpsMetadata = false;
-                //    options.TokenValidationParameters = new TokenValidationParameters
-                //    {
-                //        // укзывает, будет ли валидироваться издатель при валидации токена
-                //        ValidateIssuer = true,
-                //        // строка, представляющая издателя
-                //        ValidIssuer = AuthOptions.ISSUER,
+            //.AddJwtBearer(options => // token generating by app
+            //{
+            //    options.RequireHttpsMetadata = false;
+            //    options.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        // укзывает, будет ли валидироваться издатель при валидации токена
+            //        ValidateIssuer = true,
+            //        // строка, представляющая издателя
+            //        ValidIssuer = AuthOptions.ISSUER,
 
-                //        // будет ли валидироваться потребитель токена
-                //        ValidateAudience = true,
-                //        // установка потребителя токена
-                //        ValidAudience = AuthOptions.AUDIENCE,
+            //        // будет ли валидироваться потребитель токена
+            //        ValidateAudience = true,
+            //        // установка потребителя токена
+            //        ValidAudience = AuthOptions.AUDIENCE,
 
-                //        // будет ли валидироваться время существования
-                //        ValidateLifetime = true,
+            //        // будет ли валидироваться время существования
+            //        ValidateLifetime = true,
 
-                //        // валидация ключа безопасност
-                //        ValidateIssuerSigningKey = true,
-                //        // установка ключа безопасности
-                //        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
-                //    };
-                //});
-                //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                //    .AddCookie(options => // CookieAuthenticationOptions
-                //    {
-                //        options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
-                //    });
+            //        // валидация ключа безопасност
+            //        ValidateIssuerSigningKey = true,
+            //        // установка ключа безопасности
+            //        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
+            //    };
+            //});
+            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            //    .AddCookie(options => // CookieAuthenticationOptions
+            //    {
+            //        options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+            //    });
 
+            services.Configure<EmailConfig>(this.Configuration.GetSection("EmailConfiguration"));
+            //services.Configure<EmailConfig>( e =>  
+            //{
+            //    e.From = this.Configuration["EmailConfiguration:From"];
+            //    e.Password = this.Configuration["EmailConfiguration:Password"];
+            //    e.Port = System.Int32.Parse(this.Configuration["EmailConfiguration:Port"]);
+            //    e.SmtpServer = this.Configuration["EmailConfiguration:SmtpServer"];
+            //    e.UserName = this.Configuration["EmailConfiguration:UserName"];
+            //});
 
             // Resolve dependencies
             services.AddScoped<IRepository, Repository>();
+            services.AddScoped<IEmailService, EmailService>();
 
             services.AddControllersWithViews();
         }

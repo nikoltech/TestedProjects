@@ -8,4 +8,12 @@
     <Folder Include="Interfaces\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="2.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WebAppSome.DataAccess\WebAppSome.DataAccess.csproj" />
+  </ItemGroup>
+
 </Project>

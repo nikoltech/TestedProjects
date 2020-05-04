@@ -2,6 +2,7 @@
 {
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.IdentityModel.Tokens;
@@ -10,6 +11,7 @@
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
     using System.Threading.Tasks;
+    using WebAppSome.BusinessLogic.Services.Email;
     using WebAppSome.DataAccess.Entities;
     using WebAppSome.DataAccess.Repositories;
     using WebAppSome.Infrastructure;
@@ -20,12 +22,18 @@
         private readonly IRepository repo;
         private readonly UserManager<User> UserManager;
         private readonly SignInManager<User> SignInManager;
+        private readonly EmailService EmailService;
 
-        public AccountController(IRepository repository, UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(
+            IRepository repository, 
+            UserManager<User> userManager, 
+            SignInManager<User> signInManager,
+            EmailService emailService)
         {
             this.repo = repository;
             this.UserManager = userManager;
             this.SignInManager = signInManager;
+            this.EmailService = emailService;
         }
 
         //[HttpPost("/token")]
@@ -76,6 +84,17 @@
                 try
                 {
                     User signedUser = await this.UserManager.FindByEmailAsync(model.Email);
+                    if (signedUser != null)
+                    {
+                        // проверяем, подтвержден ли email
+                        if (!await this.UserManager.IsEmailConfirmedAsync(signedUser))
+                        {
+                            ModelState.AddModelError(string.Empty, "Вы не подтвердили свой email");
+                            return View(model);
+                        }
+                    }
+
+
                     var result = await this.SignInManager.PasswordSignInAsync(signedUser.UserName, model.Password, model.RememberMe, false);
                     if (result.Succeeded)
                     {
@@ -123,8 +142,22 @@
                         
                         if (result.Succeeded)
                         {
-                            await this.SignInManager.SignInAsync(user, false);
-                            return RedirectToAction("Index", "Home");
+                            //await this.SignInManager.SignInAsync(user, false);
+
+                            var code = await this.UserManager.GenerateEmailConfirmationTokenAsync(user);
+                            var callbackUrl = Url.Action(
+                                "ConfirmEmail",
+                                "Account",
+                                new { userId = user.Id, code = code},
+                                protocol: HttpContext.Request.Scheme);
+
+                            Message message = new Message(user.Email, "WebAppSome: Email confirmation",
+                                $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
+
+                            await this.EmailService.SendEmailAsync(message);
+
+                            //return RedirectToAction("Index", "Home");
+                            return Content("Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
                         }
                         else
                         {
@@ -146,6 +179,28 @@
             }
 
             return View(model);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return View("Error");
+            }
+
+            var user = await this.UserManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return View("Error");
+            }
+
+            var result = await this.UserManager.ConfirmEmailAsync(user, code);
+            if (result.Succeeded)
+                return RedirectToAction("Index", "Home");
+            else
+                return View("Error");
         }
 
         public async Task<IActionResult> Logout()
