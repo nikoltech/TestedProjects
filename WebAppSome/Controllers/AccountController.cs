@@ -5,6 +5,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Options;
     using Microsoft.IdentityModel.Tokens;
     using System;
     using System.Collections.Generic;
@@ -28,12 +29,12 @@
             IRepository repository, 
             UserManager<User> userManager, 
             SignInManager<User> signInManager,
-            EmailService emailService)
+            IOptions<EmailConfig> emailConfig)
         {
             this.repo = repository;
             this.UserManager = userManager;
             this.SignInManager = signInManager;
-            this.EmailService = emailService;
+            this.EmailService = new EmailService(emailConfig.Value);
         }
 
         //[HttpPost("/token")]
@@ -129,9 +130,9 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel model)
         {
-            if (this.ModelState.IsValid)
+            try
             {
-                try
+                if (this.ModelState.IsValid)
                 {
                     User user = await this.UserManager.FindByEmailAsync(model.Email);
 
@@ -139,7 +140,7 @@
                     {
                         user = new User { Email = model.Email, UserName = this.GetUsernameFromEmail(model.Email), Year = model.Year, /*optional*/EmailConfirmed = true };
                         var result = await this.UserManager.CreateAsync(user, model.Password);
-                        
+
                         if (result.Succeeded)
                         {
                             //await this.SignInManager.SignInAsync(user, false);
@@ -148,16 +149,15 @@
                             var callbackUrl = Url.Action(
                                 "ConfirmEmail",
                                 "Account",
-                                new { userId = user.Id, code = code},
+                                new { userId = user.Id, code = code },
                                 protocol: HttpContext.Request.Scheme);
 
                             Message message = new Message(user.Email, "WebAppSome: Email confirmation",
-                                $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
+                                $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>подтвердить</a>!");
 
                             await this.EmailService.SendEmailAsync(message);
 
-                            //return RedirectToAction("Index", "Home");
-                            return Content("Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме");
+                            return View("RegisterInfo");
                         }
                         else
                         {
@@ -172,10 +172,15 @@
                         ModelState.AddModelError("", "Пользователь с таким Email уже существует!");
                     }
                 }
-                catch
+            }
+            catch
+            {
+                User user = await this.UserManager.FindByEmailAsync(model.Email);
+                if (user != null)
                 {
-                    ModelState.AddModelError("", "Something get wrong!");
+                    await this.UserManager.DeleteAsync(user);
                 }
+                ModelState.AddModelError("", "Something get wrong!");
             }
 
             return View(model);
@@ -185,22 +190,39 @@
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
-            if (userId == null || code == null)
+            ErrorViewModel errorViewModel = new ErrorViewModel
             {
-                return View("Error");
-            }
+                RequestId = "Confirmation email"
+            };
 
-            var user = await this.UserManager.FindByIdAsync(userId);
-            if (user == null)
+            try
             {
-                return View("Error");
-            }
+                if (userId == null || code == null)
+                {
+                    return View("Error", errorViewModel);
+                }
 
-            var result = await this.UserManager.ConfirmEmailAsync(user, code);
-            if (result.Succeeded)
-                return RedirectToAction("Index", "Home");
-            else
-                return View("Error");
+                var user = await this.UserManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return View("Error", errorViewModel);
+                }
+
+                var result = await this.UserManager.ConfirmEmailAsync(user, code);
+                if (result.Succeeded)
+                {
+                    await this.SignInManager.SignInAsync(user, false);
+                    return View(user);
+                }
+                else
+                {
+                    return View("Error", errorViewModel);
+                }
+            }
+            catch
+            {
+                return View("Error", errorViewModel);
+            }
         }
 
         public async Task<IActionResult> Logout()

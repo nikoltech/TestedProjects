@@ -8,9 +8,9 @@
     public class EmailService : IEmailService
     {
         private readonly EmailConfig EmailConfiguration;
-        public EmailService(IOptions<EmailConfig> emailOptions)
+        public EmailService(EmailConfig emailOptions)
         {
-            this.EmailConfiguration = emailOptions.Value;
+            this.EmailConfiguration = emailOptions;
         }
 
         public async Task SendEmailAsync(Message message)

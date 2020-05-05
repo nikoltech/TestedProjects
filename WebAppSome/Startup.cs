@@ -79,18 +79,9 @@ namespace WebAppSome
             //    });
 
             services.Configure<EmailConfig>(this.Configuration.GetSection("EmailConfiguration"));
-            //services.Configure<EmailConfig>( e =>  
-            //{
-            //    e.From = this.Configuration["EmailConfiguration:From"];
-            //    e.Password = this.Configuration["EmailConfiguration:Password"];
-            //    e.Port = System.Int32.Parse(this.Configuration["EmailConfiguration:Port"]);
-            //    e.SmtpServer = this.Configuration["EmailConfiguration:SmtpServer"];
-            //    e.UserName = this.Configuration["EmailConfiguration:UserName"];
-            //});
 
             // Resolve dependencies
             services.AddScoped<IRepository, Repository>();
-            services.AddScoped<IEmailService, EmailService>();
 
             services.AddControllersWithViews();
         }
