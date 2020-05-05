@@ -225,6 +225,91 @@
             }
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var user = await this.UserManager.FindByEmailAsync(model.Email);
+                    if (user == null || !(await this.UserManager.IsEmailConfirmedAsync(user)))
+                    {
+                        // пользователь с данным email может отсутствовать в бд
+                        // тем не менее мы выводим стандартное сообщение, чтобы скрыть 
+                        // наличие или отсутствие пользователя в бд
+                        return View("ForgotPasswordConfirmation");
+                    }
+
+                    var code = await this.UserManager.GeneratePasswordResetTokenAsync(user);
+                    var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+
+                    Message message = new Message(model.Email, "WebAppSome: Reset Password",
+                                    $"Для сброса пароля пройдите по ссылке: <a href='{callbackUrl}'>сбросить пароль</a>!");
+                    await this.EmailService.SendEmailAsync(message);
+
+                    return View("ForgotPasswordConfirmation");
+                }
+                return View(model);
+            }
+            catch
+            {
+                return View("Error", new ErrorViewModel
+                {
+                    RequestId = "ForgotPassword"
+                });
+            }
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ResetPassword(string code = null, string somes = "Еще один способ передачи данных в представление")
+        {
+            somes ??= "Why standby NULL?";
+            return code == null ? View("Error") : View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+                var user = await this.UserManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    return View("ResetPasswordConfirmation");
+                }
+                var result = await this.UserManager.ResetPasswordAsync(user, model.Code, model.Password);
+                if (result.Succeeded)
+                {
+                    return View("ResetPasswordConfirmation");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return View(model);
+            }
+            catch
+            {
+                return View("Error");
+            }
+        }
+
         public async Task<IActionResult> Logout()
         {
             await this.SignInManager.SignOutAsync();
