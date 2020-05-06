@@ -4,6 +4,7 @@ namespace WebAppSome
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.ResponseCompression;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,8 @@ namespace WebAppSome
     using Microsoft.Extensions.Hosting;
     using Microsoft.IdentityModel.Tokens;
     using System.IO;
+    using System.IO.Compression;
+    using System.Linq;
     using WebAppSome.BusinessLogic.Services.Email;
     using WebAppSome.DataAccess;
     using WebAppSome.DataAccess.Entities;
@@ -37,7 +40,7 @@ namespace WebAppSome
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(options => 
+            services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(this.Configuration["Data:ConectionString"], o => o.MigrationsAssembly("WebAppSome")));
 
             services.AddIdentity<User, IdentityRole>(options =>
@@ -91,6 +94,21 @@ namespace WebAppSome
             // добавление кэширования
             services.AddMemoryCache();
 
+            services.AddResponseCompression(options =>
+            {
+                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] 
+                {
+                    "text/javascript", 
+                    "image/svg+xml", 
+                    "application/manifest+json" 
+                });
+                options.EnableForHttps = true;
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+            });
+            services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
+
             services.AddControllersWithViews();
         }
 
@@ -108,7 +126,10 @@ namespace WebAppSome
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            // подключаем компрессию
+            app.UseResponseCompression();
+
+            app.UseStaticFiles(this.GetStaticFileOptions());
 
             app.UseFileServer(new FileServerOptions
             {
@@ -124,12 +145,25 @@ namespace WebAppSome
             app.UseAuthentication();
             app.UseAuthorization();
 
+            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private StaticFileOptions GetStaticFileOptions()
+        {
+            return new StaticFileOptions()
+            {
+                OnPrepareResponse = ctx =>
+                {
+                    ctx.Context.Response.Headers.Add("Cache-Control", "public,max-age=600");
+                }
+            };
         }
     }
 }

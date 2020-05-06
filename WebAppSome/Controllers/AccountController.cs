@@ -10,6 +10,7 @@
     using System;
     using System.Collections.Generic;
     using System.IdentityModel.Tokens.Jwt;
+    using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
     using WebAppSome.BusinessLogic.Services.Email;
@@ -259,7 +260,7 @@
                     }
 
                     var code = await this.UserManager.GeneratePasswordResetTokenAsync(user);
-                    var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                    var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code, somes = "YAAA emaaill", kakaha = "BUKAAAha" }, protocol: HttpContext.Request.Scheme);
 
                     Message message = new Message(model.Email, "WebAppSome: Reset Password",
                                     $"Для сброса пароля пройдите по ссылке: <a href='{callbackUrl}'>сбросить пароль</a>!");
@@ -278,14 +279,23 @@
             }
         }
 
+        /// <summary>
+        /// Redirected From Email for input data for reseting password
+        /// </summary>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPassword(string code = null, string somes = "Еще один способ передачи данных в представление")
         {
             somes ??= "Why standby NULL?";
+            Microsoft.Extensions.Primitives.StringValues vs;
+            vs.Append(somes);
+            this.HttpContext.Request.Query.Append(KeyValuePair.Create("somes", vs));
             return code == null ? View("Error") : View();
         }
 
+        /// <summary>
+        /// Reseting password
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
