@@ -15,6 +15,7 @@
     using WebAppSome.BusinessLogic.Services.Email;
     using WebAppSome.DataAccess.Entities;
     using WebAppSome.DataAccess.Repositories;
+    using WebAppSome.DataAccess.Services.User;
     using WebAppSome.Infrastructure;
     using WebAppSome.Models;
 
@@ -24,17 +25,20 @@
         private readonly UserManager<User> UserManager;
         private readonly SignInManager<User> SignInManager;
         private readonly EmailService EmailService;
+        private readonly UserService UserService;
 
         public AccountController(
             IRepository repository, 
             UserManager<User> userManager, 
             SignInManager<User> signInManager,
-            IOptions<EmailConfig> emailConfig)
+            IOptions<EmailConfig> emailConfig,
+            UserService userService)
         {
             this.repo = repository;
             this.UserManager = userManager;
             this.SignInManager = signInManager;
             this.EmailService = new EmailService(emailConfig.Value);
+            this.UserService = userService;
         }
 
         //[HttpPost("/token")]
@@ -84,7 +88,8 @@
             {
                 try
                 {
-                    User signedUser = await this.UserManager.FindByEmailAsync(model.Email);
+                    //User signedUser = await this.UserManager.FindByEmailAsync(model.Email);
+                    User signedUser = await this.UserService.GetUserByEmailAsync(model.Email);
                     if (signedUser != null)
                     {
                         // проверяем, подтвержден ли email
@@ -134,7 +139,8 @@
             {
                 if (this.ModelState.IsValid)
                 {
-                    User user = await this.UserManager.FindByEmailAsync(model.Email);
+                    //User user = await this.UserManager.FindByEmailAsync(model.Email);
+                    User user = await this.UserService.GetUserByEmailAsync(model.Email);
 
                     if (user == null)
                     {
@@ -176,7 +182,8 @@
             }
             catch
             {
-                User user = await this.UserManager.FindByEmailAsync(model.Email);
+                //User user = await this.UserManager.FindByEmailAsync(model.Email);
+                User user = await this.UserService.GetUserByEmailAsync(model.Email);
                 if (user != null)
                 {
                     await this.UserManager.DeleteAsync(user);
@@ -203,7 +210,8 @@
                     return View("Error", errorViewModel);
                 }
 
-                var user = await this.UserManager.FindByIdAsync(userId);
+                //var user = await this.UserManager.FindByIdAsync(userId);
+                var user = await this.UserService.GetUserAsync(userId);
                 if (user == null)
                 {
                     return View("Error", errorViewModel);
@@ -289,7 +297,8 @@
                 {
                     return View(model);
                 }
-                var user = await this.UserManager.FindByEmailAsync(model.Email);
+                //var user = await this.UserManager.FindByEmailAsync(model.Email);
+                var user = await this.UserService.GetUserByEmailAsync(model.Email);
                 if (user == null)
                 {
                     return View("ResetPasswordConfirmation");

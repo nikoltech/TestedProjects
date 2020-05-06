@@ -15,6 +15,7 @@ namespace WebAppSome
     using WebAppSome.DataAccess;
     using WebAppSome.DataAccess.Entities;
     using WebAppSome.DataAccess.Repositories;
+    using WebAppSome.DataAccess.Services.User;
     using WebAppSome.Infrastructure;
 
     public class Startup
@@ -84,6 +85,11 @@ namespace WebAppSome
 
             // Resolve dependencies
             services.AddScoped<IRepository, Repository>();
+            // внедрение зависимости UserService
+            services.AddTransient<UserService>();
+
+            // добавление кэширования
+            services.AddMemoryCache();
 
             services.AddControllersWithViews();
         }
