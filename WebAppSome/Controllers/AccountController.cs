@@ -138,14 +138,15 @@
 
                     if (user == null)
                     {
-                        user = new User { Email = model.Email, UserName = this.GetUsernameFromEmail(model.Email), Year = model.Year, /*optional*/EmailConfirmed = true };
+                        user = new User { EmailConfirmed = true/*for dev*/, Email = model.Email, UserName = this.GetUsernameFromEmail(model.Email), Year = model.Year };
                         var result = await this.UserManager.CreateAsync(user, model.Password);
 
                         if (result.Succeeded)
                         {
-                            //await this.SignInManager.SignInAsync(user, false);
-
-                            var code = await this.UserManager.GenerateEmailConfirmationTokenAsync(user);
+                            // for dev
+                            await this.SignInManager.SignInAsync(user, false);
+                            // for production 
+                            /*var code = await this.UserManager.GenerateEmailConfirmationTokenAsync(user);
                             var callbackUrl = Url.Action(
                                 "ConfirmEmail",
                                 "Account",
@@ -155,7 +156,7 @@
                             Message message = new Message(user.Email, "WebAppSome: Email confirmation",
                                 $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>подтвердить</a>!");
 
-                            await this.EmailService.SendEmailAsync(message);
+                            await this.EmailService.SendEmailAsync(message);*/
 
                             return View("RegisterInfo");
                         }
