@@ -96,25 +96,29 @@
                         // проверяем, подтвержден ли email
                         if (!await this.UserManager.IsEmailConfirmedAsync(signedUser))
                         {
-                            ModelState.AddModelError(string.Empty, "Вы не подтвердили свой email");
+                            ModelState.AddModelError(string.Empty, "Вы не подтвердили свой email. Подтвердите или пройдите регистрацию снова. Письмо повторно отправлено на указанную почту.");
+                            await this.SendConfirmationEmailAsync(signedUser).ConfigureAwait(false);
                             return View(model);
                         }
-                    }
 
-
-                    var result = await this.SignInManager.PasswordSignInAsync(signedUser.UserName, model.Password, model.RememberMe, false);
-                    if (result.Succeeded)
-                    {
-                        if (string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                        var result = await this.SignInManager.PasswordSignInAsync(signedUser.UserName, model.Password, model.RememberMe, false);
+                        if (result.Succeeded)
                         {
-                            return Redirect(model.ReturnUrl);
-                        }
+                            if (string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                            {
+                                return Redirect(model.ReturnUrl);
+                            }
 
-                        return RedirectToAction("Index", "Home");
+                            return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+                        }
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+                        ModelState.AddModelError("", "Пользователь не найден. Некорректные логин и(или) пароль");
                     }
                 }
                 catch
@@ -140,30 +144,25 @@
             {
                 if (this.ModelState.IsValid)
                 {
-                    //User user = await this.UserManager.FindByEmailAsync(model.Email);
                     User user = await this.UserService.GetUserByEmailAsync(model.Email);
+
+                    if (user != null && !user.EmailConfirmed)
+                    {
+                        await this.UserManager.DeleteAsync(user);
+                        user = null;
+                    }
 
                     if (user == null)
                     {
-                        user = new User { EmailConfirmed = true/*for dev*/, Email = model.Email, UserName = this.GetUsernameFromEmail(model.Email), Year = model.Year };
+                        user = new User { /*EmailConfirmed = true/*for dev*/ Email = model.Email, UserName = this.GetUsernameFromEmail(model.Email) };
                         var result = await this.UserManager.CreateAsync(user, model.Password);
 
                         if (result.Succeeded)
                         {
                             // for dev
-                            await this.SignInManager.SignInAsync(user, false);
+                            //await this.SignInManager.SignInAsync(user, false);
                             // for production 
-                            /*var code = await this.UserManager.GenerateEmailConfirmationTokenAsync(user);
-                            var callbackUrl = Url.Action(
-                                "ConfirmEmail",
-                                "Account",
-                                new { userId = user.Id, code = code },
-                                protocol: HttpContext.Request.Scheme);
-
-                            Message message = new Message(user.Email, "WebAppSome: Email confirmation",
-                                $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>подтвердить</a>!");
-
-                            await this.EmailService.SendEmailAsync(message);*/
+                            await this.SendConfirmationEmailAsync(user).ConfigureAwait(false);
 
                             return View("RegisterInfo");
                         }
@@ -241,6 +240,7 @@
         {
             return View();
         }
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -330,6 +330,7 @@
             }
         }
 
+        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await this.SignInManager.SignOutAsync();
@@ -383,6 +384,21 @@
 
             // install auth cookies
             await this.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+        }
+
+        private async Task SendConfirmationEmailAsync(User user)
+        {
+            var code = await this.UserManager.GenerateEmailConfirmationTokenAsync(user);
+            var callbackUrl = Url.Action(
+                "ConfirmEmail",
+                "Account",
+                new { userId = user.Id, code = code },
+                protocol: HttpContext.Request.Scheme);
+
+            Message message = new Message(user.Email, "WebAppSome: Email confirmation",
+                $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>подтвердить</a>!");
+
+            await this.EmailService.SendEmailAsync(message);
         }
         #endregion
     }

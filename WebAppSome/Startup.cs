@@ -4,6 +4,7 @@ namespace WebAppSome
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Localization;
     using Microsoft.AspNetCore.ResponseCompression;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
@@ -11,6 +12,7 @@ namespace WebAppSome
     using Microsoft.Extensions.FileProviders;
     using Microsoft.Extensions.Hosting;
     using Microsoft.IdentityModel.Tokens;
+    using System.Globalization;
     using System.IO;
     using System.IO.Compression;
     using System.Linq;
@@ -86,6 +88,11 @@ namespace WebAppSome
 
             services.Configure<EmailConfig>(this.Configuration.GetSection("EmailConfiguration"));
 
+            services.AddLocalization(options =>
+            {
+                options.ResourcesPath = "Resources";
+            });
+
             // Resolve dependencies
             services.AddScoped<IRepository, Repository>();
             // внедрение зависимости UserService
@@ -109,7 +116,8 @@ namespace WebAppSome
             services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddViewLocalization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -125,6 +133,19 @@ namespace WebAppSome
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            var supportedCultures = new[]
+            {
+                new CultureInfo("en"),
+                new CultureInfo("ru"),
+                new CultureInfo("de")
+            };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("ru"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
+
             app.UseHttpsRedirection();
             // подключаем компрессию
             app.UseResponseCompression();

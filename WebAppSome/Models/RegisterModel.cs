@@ -1,8 +1,6 @@
 ﻿namespace WebAppSome.Models
 {
-    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
-    using System.Runtime.InteropServices;
 
     public class RegisterModel
     {
