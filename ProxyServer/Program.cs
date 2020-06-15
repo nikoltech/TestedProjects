@@ -1,10 +1,12 @@
 ﻿namespace ProxyServer
 {
+    using ProxyServer.HTTP;
     using System;
     using System.IO;
     using System.Net;
     using System.Net.Sockets;
     using System.Text.RegularExpressions;
+    using System.Threading;
 
     // TODO: Preview. Need improovement & refactoring
     class Program
@@ -16,50 +18,13 @@
             TcpListener myTCP = new TcpListener(IPAddress.Parse("127.0.0.1"), 8887);
             myTCP.Start();
 
-            // TODO: CPU do not overloaded. Is it?
             while (true)
             {
-                // Check exists request
                 if (myTCP.Pending())
                 {
-                    // запрос есть
-                    using (Socket myClient = myTCP.AcceptSocket())
-                    {
-                        if (myClient.Connected)
-                        {
-                            // get client request content
-                            byte[] httpRequest = ReadToEnd(myClient);
-
-                            // get host & port
-                            Regex myReg = new Regex(@"Host: (((?<host>.+?):(?<port>\d+?))|(?<host>.+?))\s+", RegexOptions.Multiline | RegexOptions.IgnoreCase);
-                            Match m = myReg.Match(System.Text.Encoding.ASCII.GetString(httpRequest));
-                            string host = m.Groups["host"].Value;
-                            int port = 0;
-                            if (!int.TryParse(m.Groups["port"].Value, out port)) { port = 80; }
-
-                            // get IP
-                            IPHostEntry myIPHostEntry = Dns.GetHostEntry(host);
-
-                            // create outgoing network endpoint
-                            IPEndPoint myIPEndPoint = new IPEndPoint(myIPHostEntry.AddressList[0], port);
-
-                            // send request to remote server
-                            using (Socket myRerouting = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
-                            {
-                                myRerouting.Connect(myIPEndPoint);
-                                if (myRerouting.Send(httpRequest, httpRequest.Length, SocketFlags.None) != httpRequest.Length)
-                                {
-                                    Console.WriteLine("При отправке данных удаленному серверу произошла ошибка...");
-                                }
-                                else
-                                {
-                                    // здесь будет код получения ответа от удаленного сервера
-                                    byte[] httpResponse = ReadToEnd(myRerouting);
-                                    myClient.Send(httpResponse, httpResponse.Length, SocketFlags.None);
-                                }
-                            }
-                        }
-                    }
+                    Thread t = new Thread(ExecuteRequest);
+                    t.IsBackground = true;
+                    t.Start(myTCP.AcceptSocket());
                 }
             }
         }
@@ -75,6 +40,49 @@
                     m.Write(b, 0, len);
                 }
                 return m.ToArray();
+            }
+        }
+
+        private static void ExecuteRequest(object arg)
+        {
+            using (Socket myClient = (Socket)arg)
+            {
+                if (myClient.Connected)
+                {
+                    byte[] httpRequest = ReadToEnd(myClient);
+                    Parser http = new Parser(httpRequest);
+                    if (http.Items == null || http.Items.Count <= 0 || !http.Items.ContainsKey("Host"))
+                    {
+                        Console.WriteLine("Получен запрос {0} байт, заголовки не найдены.", httpRequest.Length);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Получен запрос {0} байт, метод {1}, хост {2}:{3}", httpRequest.Length, http.Method, http.Host, http.Port);
+                        IPHostEntry myIPHostEntry = Dns.GetHostEntry(http.Host);
+                        if (myIPHostEntry == null || myIPHostEntry.AddressList == null || myIPHostEntry.AddressList.Length <= 0)
+                        {
+                            Console.WriteLine("Не удалось определить IP-адрес по хосту {0}.", http.Host);
+                        }
+                        else
+                        {
+                            IPEndPoint myIPEndPoint = new IPEndPoint(myIPHostEntry.AddressList[0], http.Port);
+                            using (Socket myRerouting = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+                            {
+                                myRerouting.Connect(myIPEndPoint);
+                                if (myRerouting.Send(httpRequest, httpRequest.Length, SocketFlags.None) != httpRequest.Length)
+                                {
+                                    Console.WriteLine("При отправке данных удаленному серверу произошла ошибка...");
+                                }
+                                else
+                                {
+                                    byte[] httpResponse = ReadToEnd(myRerouting);
+                                    myClient.Send(httpResponse, httpResponse.Length, SocketFlags.None);
+                                }
+                            }
+                        }
+                    }
+                    myClient.Close();
+                }
             }
         }
     }
