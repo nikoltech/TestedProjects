@@ -1244,7 +1244,7 @@ namespace Testcode
             {
                 Console.WriteLine("AllBase.Instance.Constructor", Color.OrangeRed);
                 this.m_Field3 = new Tracker("AllBase.Instance.Field3", Color.OrangeRed);
-                this.Virtual();
+                this.Virtual("From AllBase");
             }
             static AllBase()
             {
@@ -1255,9 +1255,9 @@ namespace Testcode
             private Tracker m_Field3;
             static private Tracker s_Field1 = new Tracker("AllBase.Static.Field1", Color.OrangeRed);
             static private Tracker s_Field2 = new Tracker("AllBase.Static.Field2", Color.OrangeRed);
-            virtual public void Virtual()
+            virtual public void Virtual(string currentClassName)
             {
-                Console.WriteLine("AllBase.Instance.Virtual", Color.OrangeRed);
+                Console.WriteLine("AllBase.Instance.Virtual: " + currentClassName, Color.OrangeRed);
             }
         }
 
@@ -1267,7 +1267,7 @@ namespace Testcode
             {
                 Console.WriteLine("Base.Instance.Constructor", Color.AntiqueWhite);
                 this.m_Field3 = new Tracker("Base.Instance.Field3", Color.AntiqueWhite);
-                this.Virtual();
+                this.Virtual("From Base");
             }
             static Base()
             {
@@ -1278,9 +1278,9 @@ namespace Testcode
             private Tracker m_Field3;
             static private Tracker s_Field1 = new Tracker("Base.Static.Field1", Color.AntiqueWhite);
             static private Tracker s_Field2 = new Tracker("Base.Static.Field2", Color.AntiqueWhite);
-            override public void Virtual()
+            override public void Virtual(string currentClassName)
             {
-                Console.WriteLine("Base.Instance.Virtual", Color.AntiqueWhite);
+                Console.WriteLine("Base.Instance.Virtual: " + currentClassName, Color.AntiqueWhite);
             }
         }
         class Derived : Base
@@ -1299,9 +1299,9 @@ namespace Testcode
             private Tracker m_Field3;
             static private Tracker s_Field1 = new Tracker("Derived.Static.Field1", Color.GreenYellow);
             static private Tracker s_Field2 = new Tracker("Derived.Static.Field2", Color.GreenYellow);
-            override public void Virtual()
+            override public void Virtual(string currentClassName)
             {
-                Console.WriteLine("Derived.Instance.Virtual", Color.GreenYellow);
+                Console.WriteLine("Derived.Instance.Virtual: " + currentClassName, Color.GreenYellow);
             }
         }
         class Tracker
