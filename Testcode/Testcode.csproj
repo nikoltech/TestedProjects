@@ -6,4 +6,8 @@
     <StartupObject>Testcode.Program</StartupObject>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Colorful.Console" Version="1.2.10" />
+  </ItemGroup>
+
 </Project>

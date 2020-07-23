@@ -1,10 +1,14 @@
-﻿using System;
+﻿using Colorful;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Runtime.ConstrainedExecution;
 using System.Collections;
+using System.Diagnostics;
+using Console = Colorful.Console;
+using System.Drawing;
 
 namespace Testcode
 {
@@ -553,6 +557,20 @@ namespace Testcode
     {
         public int FAttr { get; set; } = 15;
     }
+
+    class InvokMeth
+    {
+        public string Str { get; set; }
+        public InvokMeth(string str)
+        {
+            this.SetValueToStr(str);
+        }
+
+        public void SetValueToStr(string str)
+        {
+            this.Str = str;
+        }
+    }
     
     [AtrTest]
     class Program
@@ -962,6 +980,53 @@ namespace Testcode
                 frs = fts;
                 Console.Clear(); ////////////////////////////////////////////////////////////
 
+                long ql = long.MaxValue;
+                float qf = ql;
+
+                Console.WriteLine($"Cast numeric types result: {ql}");
+                Console.WriteLine($"Cast numeric types result: {qf:F}");
+
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+                var d = new ConcurrentDictionary<int, int>();
+                for (int i = 0; i < 1000000; i++) d[i] = 123;
+                stopWatch.Stop();
+                TimeSpan ts = stopWatch.Elapsed;
+                string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                    ts.Hours, ts.Minutes, ts.Seconds,
+                    ts.Milliseconds / 10);
+                Console.WriteLine("Потрачено времени на выполнение: " + elapsedTime);
+
+                stopWatch.Reset();
+                stopWatch.Start();
+                var dq = new Dictionary<int, int>();
+                for (int i = 0; i < 1000000; i++) lock (dq) dq[i] = 123;
+                stopWatch.Stop();
+                ts = stopWatch.Elapsed;
+                elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                    ts.Hours, ts.Minutes, ts.Seconds,
+                    ts.Milliseconds / 10);
+                Console.WriteLine("Потрачено времени на выполнение: " + elapsedTime);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                for (int i = 0; i < 200; i++)
+                Console.Write("w");
+                Console.WriteLine();
+
+                InvokMeth w = new InvokMeth("str is set");
+                Console.WriteLine(w.Str);
 
 
                 SomethDo();
@@ -1030,16 +1095,30 @@ namespace Testcode
                 Console.WriteLine(bf);
                 Console.WriteLine("Enter integer a b c:\n\n");
 
-                Int32.TryParse(Console.ReadLine(), out int a);
+                /*Int32.TryParse(Console.ReadLine(), out int a);
                 Int32.TryParse(Console.ReadLine(), out int b);
                 Int32.TryParse(Console.ReadLine(), out int c);
 
-                Console.WriteLine($"Average3 int({a},{b},{c}): {AverageInt3(a, b, c)}");
+                Console.WriteLine($"Average3 int({a},{b},{c}): {AverageInt3(a, b, c)}");*/
+
+
+                #region Initial classes
+
+                int DA = 244;
+                int V = 212;
+                int ID = 255;
+                Console.WriteAscii("Test: Class INIT:", Color.FromArgb(DA, V, ID));
+
+                Derived ddd = new Derived();
+                #endregion
+
+
 
 
                 Console.WriteLine("\n\nPress ANY for continue or ESCAPE for exit...");
             } while (ConsoleKey.Escape != Console.ReadKey(false).Key);
-            /*int count = 0;
+            /*
+             * int count = 0;
             do
             {
                 Root.StaticRoot = null;
@@ -1157,5 +1236,82 @@ namespace Testcode
             //    Console.Write($"{i} \t");
             //}
         }
+
+        #region INITIAL classes hieracly test shows
+        class AllBase
+        {
+            public AllBase()
+            {
+                Console.WriteLine("AllBase.Instance.Constructor", Color.OrangeRed);
+                this.m_Field3 = new Tracker("AllBase.Instance.Field3", Color.OrangeRed);
+                this.Virtual();
+            }
+            static AllBase()
+            {
+                Console.WriteLine("AllBase.Static.Constructor", Color.OrangeRed);
+            }
+            private Tracker m_Field1 = new Tracker("AllBase.Instance.Field1", Color.OrangeRed);
+            private Tracker m_Field2 = new Tracker("AllBase.Instance.Field2", Color.OrangeRed);
+            private Tracker m_Field3;
+            static private Tracker s_Field1 = new Tracker("AllBase.Static.Field1", Color.OrangeRed);
+            static private Tracker s_Field2 = new Tracker("AllBase.Static.Field2", Color.OrangeRed);
+            virtual public void Virtual()
+            {
+                Console.WriteLine("AllBase.Instance.Virtual", Color.OrangeRed);
+            }
+        }
+
+        class Base : AllBase
+        {
+            public Base()
+            {
+                Console.WriteLine("Base.Instance.Constructor", Color.AntiqueWhite);
+                this.m_Field3 = new Tracker("Base.Instance.Field3", Color.AntiqueWhite);
+                this.Virtual();
+            }
+            static Base()
+            {
+                Console.WriteLine("Base.Static.Constructor", Color.AntiqueWhite);
+            }
+            private Tracker m_Field1 = new Tracker("Base.Instance.Field1", Color.AntiqueWhite);
+            private Tracker m_Field2 = new Tracker("Base.Instance.Field2", Color.AntiqueWhite);
+            private Tracker m_Field3;
+            static private Tracker s_Field1 = new Tracker("Base.Static.Field1", Color.AntiqueWhite);
+            static private Tracker s_Field2 = new Tracker("Base.Static.Field2", Color.AntiqueWhite);
+            override public void Virtual()
+            {
+                Console.WriteLine("Base.Instance.Virtual", Color.AntiqueWhite);
+            }
+        }
+        class Derived : Base
+        {
+            public Derived()
+            {
+                Console.WriteLine("Derived.Instance.Constructor", Color.GreenYellow);
+                this.m_Field3 = new Tracker("Derived.Instance.Field3", Color.GreenYellow);
+            }
+            static Derived()
+            {
+                Console.WriteLine("Derived.Static.Constructor", Color.GreenYellow);
+            }
+            private Tracker m_Field1 = new Tracker("Derived.Instance.Field1", Color.GreenYellow);
+            private Tracker m_Field2 = new Tracker("Derived.Instance.Field2", Color.GreenYellow);
+            private Tracker m_Field3;
+            static private Tracker s_Field1 = new Tracker("Derived.Static.Field1", Color.GreenYellow);
+            static private Tracker s_Field2 = new Tracker("Derived.Static.Field2", Color.GreenYellow);
+            override public void Virtual()
+            {
+                Console.WriteLine("Derived.Instance.Virtual", Color.GreenYellow);
+            }
+        }
+        class Tracker
+        {
+            public Tracker(string text, Color color)
+            {
+                Console.WriteLine(text, color);
+            }
+        }
+
+        #endregion
     }
 }
