@@ -7,6 +7,7 @@ namespace FAngu
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.EntityFrameworkCore;
+    using FAngu.Services;
 
     public class Startup
     {
@@ -16,6 +17,8 @@ namespace FAngu
         {
             string connectionString = "Server=(localdb)\\mssqllocaldb;Database=productsdb;Trusted_Connection=True;";
             services.AddDbContext<AppContext>(options => options.UseSqlServer(connectionString));
+            services.AddTransient<TestDIOne>();
+            services.AddSingleton<TestDITwo>();
 
             services.AddMvc(options =>
             {
@@ -40,6 +43,7 @@ namespace FAngu
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseMiddleware<TimerMiddleware>();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

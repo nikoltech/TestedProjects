@@ -1,6 +1,7 @@
 ﻿namespace FAngu.Controllers
 {
     using FAngu.Entities;
+    using FAngu.Services;
     using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
     using System.Linq;
@@ -9,10 +10,14 @@
     public class ProductController : Controller
     {
         private readonly AppContext _context;
+        private readonly TestDIOne _one;
+        private readonly TestDITwo _two;
 
-        public ProductController(AppContext context)
+        public ProductController(AppContext context, /*TestDIOne one,*/ TestDITwo two )
         {
             this._context = context;
+            //this._one = one;
+            this._two = two;
             if (!this._context.Products.Any())
             {
                 this._context.Products.Add(new Product { Name = "iPhone X", Company = "Apple", Price = 79900 });
