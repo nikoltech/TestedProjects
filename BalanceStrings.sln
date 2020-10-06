@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BalanceStrings", "BalanceStrings\BalanceStrings.csproj", "{78C845FC-7B7E-469E-9719-417A05698AE3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{78C845FC-7B7E-469E-9719-417A05698AE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78C845FC-7B7E-469E-9719-417A05698AE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78C845FC-7B7E-469E-9719-417A05698AE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78C845FC-7B7E-469E-9719-417A05698AE3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {884AF3A4-9D2E-4677-85B1-8D7D032FC88C}
+	EndGlobalSection
+EndGlobal
