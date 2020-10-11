@@ -9,6 +9,9 @@ using System.Collections;
 using System.Diagnostics;
 using Console = Colorful.Console;
 using System.Drawing;
+using System.Text.Json;
+using System.Net.Http;
+using System.Net;
 
 namespace Testcode
 {
@@ -956,6 +959,98 @@ namespace Testcode
                 Console.WriteLine($"AtrTest: FAttr is {(attr as AtrTestAttribute).FAttr}");
             }
         }
+
+        //public class BasicUsageModel //: PageModel
+        //{
+        //    private readonly IHttpClientFactory _clientFactory;
+
+        //    public IEnumerable<GitHubBranch> Branches { get; private set; }
+
+        //    public bool GetBranchesError { get; private set; }
+
+        //    public BasicUsageModel(IHttpClientFactory clientFactory)
+        //    {
+        //        _clientFactory = clientFactory;
+        //    }
+
+        //    public async Task OnGet()
+        //    {
+        //        var request = new HttpRequestMessage(HttpMethod.Get,
+        //            "https://api.github.com/repos/aspnet/AspNetCore.Docs/branches");
+        //        request.Headers.Add("Accept", "application/vnd.github.v3+json");
+        //        request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+
+        //        var client = _clientFactory.CreateClient();
+
+        //        var response = await client.SendAsync(request);
+
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            using var responseStream = await response.Content.ReadAsStreamAsync();
+        //            Branches = await JsonSerializer.DeserializeAsync
+        //                <IEnumerable<GitHubBranch>>(responseStream);
+        //        }
+        //        else
+        //        {
+        //            GetBranchesError = true;
+        //            Branches = Array.Empty<GitHubBranch>();
+        //        }
+        //    }
+        //}
+
+        public class BasicClass
+        {
+            private bool secretBasic = true;
+
+            private InnerClass innerClass = new InnerClass();
+
+            public bool GetSecretBasic() => this.secretBasic;
+
+            public bool GetSecretInner() => this.innerClass.GetSecretInner();
+
+            public bool PerformBasic()
+            {
+                return this.innerClass.PerformInner();
+            }
+
+
+            class InnerClass
+            {
+                private bool secretInner = true;
+
+                public bool GetSecretInner() => this.secretInner;
+
+                public bool PerformInner()
+                {
+                    BasicClass basicClass = new BasicClass();
+                    bool basicSecretResult = basicClass.secretBasic; // ACCESS to PRIVATE FIELD
+
+                    return basicSecretResult;
+                }
+            }
+        }
+
+        public class BasicInheritedClass : BasicClass
+        {
+            class Inner2Class
+            {
+                private bool secretInner = true;
+
+                public bool GetSecretInner() => this.secretInner;
+
+                public bool PerformInner()
+                {
+                    BasicInheritedClass basicClass = new BasicInheritedClass();
+                    // CANNOT GET ACCESS to PRIVATE FIELD
+                    //bool basicSecretResult = basicClass.secretBasic; // ACCESS to PRIVATE FIELD
+
+                    //return basicSecretResult;
+
+                    return false;
+                }
+            }
+        }
+
 
         static void Main(string[] args)
         {
