@@ -12,6 +12,11 @@ using System.Drawing;
 using System.Text.Json;
 using System.Net.Http;
 using System.Net;
+using System.Reflection;
+using NUnit.Framework;
+using Testcode;
+using System.Text;
+using System.Web;
 
 namespace Testcode
 {
@@ -574,7 +579,113 @@ namespace Testcode
             this.Str = str;
         }
     }
-    
+
+    #region Assebly
+
+
+    //public class Person
+    //{
+    //    public string Name;
+
+    //    public int Age;
+
+    //    public override string ToString()
+    //    {
+    //        return $"{nameof(Name)}: {Name}, {nameof(Age)}: {Age}";
+    //    }
+    //}
+
+    //public class CodeBuilder
+    //{
+    //    private readonly object _personBuilderData;
+
+    //    public CodeBuilder(string person)
+    //    {
+    //        Type codeBuilder = typeof(CodeBuilder);
+    //        Assembly codeAssembly = codeBuilder.Assembly;
+    //        AssemblyName assName = codeAssembly.GetName();
+    //        string assemblyName = assName.Name;
+
+    //        this._personBuilderData = Activator.CreateInstance(Type.GetType($@"{assemblyName}.{person}") ?? throw new Exception("Something wrong"));
+    //    }
+
+    //    public CodeBuilder AddField<TEntityType>(string name, TEntityType type)
+    //    {
+    //        Type myType = _personBuilderData.GetType();
+    //        FieldInfo[] myField = myType.GetFields();
+
+    //        foreach (var item in myField)
+    //        {
+    //            if (item.Name == name)
+    //            {
+    //                name = item.Name;
+    //            }
+    //        }
+
+    //        return this;
+    //    }
+    //}
+
+
+    public class Person
+    {
+        public string Name;
+
+        public string Type;
+
+        public int Age;
+
+        public override string ToString()
+        {
+            return $"{nameof(Name)}: {Name}, {nameof(Age)}: {Age}";
+        }
+    }
+
+    class Class
+    {
+        public string Name;
+        public List<Person> listOfData = new List<Person>();
+
+        public Class()
+        {
+
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"public class {Name}").AppendLine("{");
+            foreach (var f in listOfData)
+                sb.AppendLine($"  {f};");
+            sb.AppendLine("}");
+            return sb.ToString();
+        }
+    }
+
+    public class CodeBuilder
+    {
+        private Class data = new Class();
+
+        public CodeBuilder(string rootName)
+        {
+            data.Name = rootName;
+        }
+
+        public CodeBuilder AddField(string name, string type)
+        {
+            data.listOfData.Add(new Person { Name = name, Type = type });
+            return this;
+        }
+
+        public override string ToString()
+        {
+            return data.ToString();
+        }
+    }
+
+
+    #endregion
+
     [AtrTest]
     class Program
     {
@@ -1051,6 +1162,12 @@ namespace Testcode
             }
         }
 
+        class Pet
+        {
+            public string Name { get; set; }
+            public int Age { get; set; }
+            public int id { get; set; }
+        }
 
         static void Main(string[] args)
         {
@@ -1074,6 +1191,139 @@ namespace Testcode
                 ft[] fts = new ft[1] { new ft()};
                 frs = fts;
                 Console.Clear(); ////////////////////////////////////////////////////////////
+                string secs = "wskwn7u2bvd8anlbh24hwqk7s_0sktmvbyb6ui7lmha.r87.me";
+                string encoded = HttpUtility.HtmlEncode(secs);
+                Console.WriteLine(secs);
+                Console.WriteLine(encoded);
+                Console.WriteLine(secs.Equals(encoded));
+
+                Console.WriteLine("check if start");
+                int h = 1;
+                if (string.IsNullOrEmpty("") || ++h == 2)
+                {
+                    Console.WriteLine("enter if");
+                }
+                Console.WriteLine($"H = {h}");
+                Console.WriteLine("check if end");
+
+
+
+
+                string LeadsFormType = "profiTable";
+
+                string productTypeDTO = null;
+
+                string fType = LeadsFormType.ToLower();
+                if (fType.Equals("accumulative")
+                    || fType.Equals("free")
+                    || fType.Equals("profitable"))
+                {
+                    productTypeDTO = "депозит";
+                }
+                else
+                {
+                    productTypeDTO = "кредит";
+                }
+                Console.WriteLine($"productTypeDTO: {productTypeDTO}");
+
+
+                int ctr = 0;
+                Pet[] pets = { 
+                   new Pet { id = ++ctr, Name="Barley", Age=4 },
+                   new Pet { id = ++ctr, Name="Boots", Age=4 },
+                   new Pet { id = ++ctr, Name="Boots1", Age=4 },
+                   new Pet { id = ++ctr, Name="Boots2", Age=4 },
+                   new Pet { id = ++ctr, Name="Boots3", Age=4 },
+                   new Pet { id = ++ctr, Name="Boots4", Age=4 },
+                   new Pet { id = ++ctr, Name="Boots5", Age=4 },
+                   new Pet { id = ++ctr, Name="Whiskers", Age=4 } };
+
+                foreach (Pet pet in pets)
+                {
+                    Console.WriteLine("{0} - {1}", pet.Name, pet.Age);
+                }
+
+                IOrderedEnumerable<Pet> queryOrdered = pets.OrderBy(pet => pet.id);
+
+                IEnumerable<Pet> query = queryOrdered.OrderBy(pet => pet.Age).Skip(4).Take(3).ToList();
+
+                Console.WriteLine("\nSorted\n");
+                foreach (Pet pet in query)
+                {
+                    Console.WriteLine("{0} - {1}", pet.Name, pet.Age);
+                }
+
+                // var cb = new CodeBuilder("Person").AddField("Name", "string").AddField("Age", "int");
+                var cb = new CodeBuilder("Person").AddField("Name", "string").AddField("Age", "int");
+                Console.WriteLine(cb);
+
+                int[] nums = { 1, 1, 1, 1, 2, 2, 3, 4, 4, 5, 5, 5, 6, 6, 6, 6, 6, 6, 7 };
+                Dictionary<int, int> pairs = new Dictionary<int, int>();
+                foreach (var number in nums)
+                {
+                    if(!pairs.TryGetValue(number, out int existValue))
+                    {
+                        pairs.Add(number, 1);
+                        continue;
+                    }
+                    pairs[number]++;
+                }
+
+                foreach (var item in pairs.OrderBy(v => v.Value))
+                {
+                    for (int i = 0; i < item.Value; i++)
+                    {
+                        Console.Write($"{item.Key} ");
+                    }
+                }
+
+
+
+
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("----------------");
+                Console.WriteLine();
+
+                string srcStr = @"{
+                  \""On\"": true,
+                  \""IpList\"": \""176.37.35.144,127.0.0.1,83.170.207.2,46.164.156.70,94.45.33.55,95.170.91.226,::1,94.125.125.154,176.36.123.192,89.184.67.44,176.36.71.183,176.126.61.26,188.163.2.222,95.67.43.166,176.37.176.64,192.168.0.77,176.37.136.28,176.116.192.85,178.151.60.141,78.27.153.252,176.38.16.54,94.154.226.229,188.163.9.204,178.94.226.71,176.36.170.210,188.163.10.4,188.163.82.4,178.94.225.11,212.9.226.158,37.229.52.63,46.219.210.204,46.219.226.208,176.36.145.160,46.211.135.92,46.211.97.233,192.168.0.127,193.106.139.101,193.106.139.39,193.106.139.252,93.74.8.144,176.37.40.174,37.73.157.103,46.211.99.128,77.47.226.131,178.54.209.65,193.106.139.118,193.106.139.26,46.219.210.252,192.168.2.5,192.168.2.1,95.67.92.21,188.163.74.31,94.153.103.216,178.128.162.234,46.219.226.158,176.115.103.23,194.44.66.28,176.36.159.45,194.44.66.19,194.44.66.,192.168.1.102,176.115.103.162,46.211.21.197,31.27.155.92,94.158.88.236,193.200.84.11,176.97.63.158,176.37.123.194,176.8.251.155,10.74.129.50,176.100.8.104,178.54.66.40,79.110.134.129,178.150.45.84,192.168.0.100,37.223.156.71,37.223.237.11,5.248.110.2,37.73.110.3\"",
+                  \""DomensList\"": null
+                }\""";
+
+                List<string> chkStr = new List<string>
+                {
+                    "18.207.3.88 410",
+                    "130.180.211.248",
+                    "136.144.33.116",
+                    "66.249.75.83",
+                    "66.249.73.254",
+                    "46.183.220.238",
+                    "173.239.197.57",
+                    "157.55.39.152",
+                    "45.87.1.156",
+                    "77.222.128.158",
+                    "194.44.92.20",
+                    "195.78.247.193"
+                };
+
+                foreach (var checkedIp in chkStr)
+                {
+                    Console.WriteLine($" {checkedIp}  \t| {srcStr.Contains(checkedIp).ToString().ToUpper()}");
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("----------------");
+                Console.WriteLine();
+                Console.WriteLine();
+
+
+
+                foreach (var item in pairs.OrderBy(v => v.Value))
+                {
+                    Console.WriteLine($"Key - {item.Key}, Count - {item.Value}");
+                }
+                Console.WriteLine();
 
                 long ql = long.MaxValue;
                 float qf = ql;
@@ -1174,10 +1424,10 @@ namespace Testcode
                 byte bf = 2;
                 bf--;
                 ICollection r;
-                var query = from x in Enumerable.Range(0,6)
+                var query4 = from x in Enumerable.Range(0,6)
                             join y in Enumerable.Range(3,9)
                             on x equals y select x;
-                foreach (var q in query) Console.Write(q);
+                foreach (var q in query4) Console.Write(q);
 
                 Console.WriteLine();
                 Console.WriteLine(1+2+"kyky"+3+4);
@@ -1408,5 +1658,40 @@ namespace Testcode
         }
 
         #endregion
+    }
+}
+
+
+namespace TestCode.UnitTests
+{
+    [TestFixture]
+    public class FirstTestSuite
+    {
+        private static string Preprocess(string s)
+        {
+            return s;
+            return s.Trim().Replace("\r\n", "\n");
+        }
+
+        [Test]
+        public void EmptyTest()
+        {
+            var cb = new CodeBuilder("Foo");
+            Assert.That(Preprocess(cb.ToString()), Is.EqualTo("public class Foo\n{\n}"));
+        }
+
+        [Test]
+        public void PersonTest()
+        {
+            var cb = new CodeBuilder("Person").AddField("Name", "string").AddField("Age", "int");
+            Assert.That(Preprocess(cb.ToString()),
+                Is.EqualTo(
+                    @"public class Person
+                        {
+                            public string Name;
+                            public int Age;
+                        }"
+                ));
+        }
     }
 }
